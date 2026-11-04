@@ -1,0 +1,9 @@
+{
+  "name": "ppi-smart-assistant-vercel",
+  "version": "2.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "openai": "^5.20.0"
+  }
+}

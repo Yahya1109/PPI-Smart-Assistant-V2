@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPI SMART ASSISTANT V2.0 - Program Pembelajaran Individual</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E40AF', // Blue 800 - Pendidikan
+                        secondary: '#3B82F6', // Blue 500
+                        accent: '#10B981', // Emerald 500 - Perkembangan
+                        surface: '#F8FAFC',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- jsPDF & AutoTable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .sidebar-active { background-color: #EFF6FF; color: #1E40AF; border-right: 3px solid #1E40AF; font-weight: 600; }
+        
+        /* Form stylings */
+        .form-group label { display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem; font-size: 0.875rem; }
+        .form-input { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; font-size: 0.875rem; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
+        .form-input:focus { outline: none; border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    </style>
+</head>
+<body class="text-gray-800 antialiased h-screen flex flex-col overflow-hidden">
+
+    <!-- APP CONTAINER -->
+    <div id="app" class="flex-grow flex h-full">
+        <!-- Landing Page View -->
+        <div id="view-landing" class="w-full h-full flex flex-col overflow-y-auto w-full absolute inset-0 z-50 bg-white">
+            <!-- Header/Nav -->
+            <nav class="glass-effect fixed w-full z-50 border-b border-gray-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between h-16 items-center">
+                        <div class="flex-shrink-0 flex items-center gap-2">
+                            <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <span class="font-bold text-xl text-primary tracking-tight">PPI Smart Assistant</span>
+                        </div>
+                        <div>
+                            <button onclick="app.navigateTo('dashboard')" class="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">Masuk Dashboard</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Hero Section -->
+            <main class="flex-grow flex items-center pt-20">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24 flex flex-col lg:flex-row items-center gap-12">
+                    <div class="lg:w-1/2 text-center lg:text-left">
+                        <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl mb-6">
+                            <span class="block">PPI SMART</span>
+                            <span class="block text-primary">ASSISTANT</span>
+                        </h1>
+                        <h2 class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0 font-medium">
+                            Solusi Digital Penyusunan Program Pembelajaran Individual untuk Mendukung Pendidikan Inklusif
+                        </h2>
+                        <p class="mt-4 text-gray-600 max-w-lg mx-auto lg:mx-0">
+                            Aplikasi pintar yang membantu guru menyusun PPI secara profesional berdasarkan kebutuhan, karakteristik, dan perkembangan peserta didik berkebutuhan khusus.
+                        </p>
+                        <div class="mt-8 sm:flex sm:justify-center lg:justify-start gap-4">
+                            <button onclick="app.navigateTo('dashboard')" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-primary hover:bg-blue-900 md:py-4 md:text-lg md:px-10 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                                <i class="fa-solid fa-rocket mr-2"></i> Mulai Membuat PPI
+                            </button>
+                            <button onclick="app.navigateTo('riwayat')" class="mt-3 w-full flex items-center justify-center px-8 py-3 border border-gray-300 text-base font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10 transition-all sm:mt-0 shadow-sm">
+                                <i class="fa-solid fa-history mr-2"></i> Lihat Riwayat PPI
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Illustrations -->
+                    <div class="lg:w-1/2 relative">
+                        <div class="relative w-full aspect-[4/3] bg-blue-50 rounded-2xl overflow-hidden shadow-2xl border border-blue-100 flex items-center justify-center p-8">
+                            <!-- Abstract SVG Illustration representing Inclusive Education -->
+                            <svg viewBox="0 0 400 300" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="200" cy="150" r="120" fill="#E0F2FE" />
+                                <circle cx="150" cy="120" r="40" fill="#3B82F6" opacity="0.8" />
+                                <circle cx="250" cy="120" r="35" fill="#10B981" opacity="0.8" />
+                                <circle cx="200" cy="190" r="45" fill="#F59E0B" opacity="0.8" />
+                                <!-- Connectors -->
+                                <path d="M150,120 Q200,100 250,120" stroke="#94A3B8" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                                <path d="M150,120 Q175,170 200,190" stroke="#94A3B8" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                                <path d="M250,120 Q225,170 200,190" stroke="#94A3B8" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                                <!-- Figures abstract -->
+                                <!-- Teacher -->
+                                <rect x="190" y="80" width="20" height="20" rx="10" fill="#1E40AF" />
+                                <path d="M185,110 L215,110 L220,160 L180,160 Z" fill="#1E40AF" rx="5" />
+                                <!-- Student 1 -->
+                                <rect x="135" y="160" width="16" height="16" rx="8" fill="#047857" />
+                                <path d="M130,180 L156,180 L160,220 L126,220 Z" fill="#047857" />
+                                <!-- Student 2 (Wheelchair rep) -->
+                                <rect x="250" y="150" width="16" height="16" rx="8" fill="#B45309" />
+                                <path d="M245,170 L271,170 L271,200 L245,200 Z" fill="#B45309" />
+                                <circle cx="265" cy="210" r="12" fill="none" stroke="#333" stroke-width="3" />
+                                <circle cx="245" cy="210" r="12" fill="none" stroke="#333" stroke-width="3" />
+                            </svg>
+                        </div>
+                        <!-- Floating badges -->
+                        <div class="absolute -bottom-4 -left-4 bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-center gap-3 animate-bounce" style="animation-duration: 3s;">
+                            <div class="bg-green-100 text-green-600 p-2 rounded-lg"><i class="fa-solid fa-check-circle"></i></div>
+                            <div>
+                                <p class="text-xs text-gray-500">Status</p>
+                                <p class="font-bold text-sm">Siap Digunakan</p>
+                            </div>
+                        </div>
+                        <div class="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-center gap-3 animate-bounce" style="animation-duration: 4s; animation-delay: 1s;">
+                            <div class="bg-blue-100 text-blue-600 p-2 rounded-lg"><i class="fa-solid fa-file-pdf"></i></div>
+                            <div>
+                                <p class="text-xs text-gray-500">Export</p>
+                                <p class="font-bold text-sm">PDF Format</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <!-- Global Footer included in Landing -->
+            <footer class="bg-white border-t border-gray-200 mt-auto">
+                <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+                    <p class="text-base text-gray-900 font-semibold mb-2">PPI Smart Assistant</p>
+                    <p class="text-sm text-gray-500 mb-4">Dibuat dengan teknologi digital untuk mendukung pendidikan inklusif</p>
+                    <div class="flex justify-center items-center gap-2 text-xs text-gray-400">
+                        <span>Dibuat oleh Yahya Muhaimin</span>
+                        <span>•</span>
+                        <span>&copy; <span id="currentYearLanding"></span></span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Dashboard App View (Hidden by default) -->
+        <div id="view-app" class="hidden w-full h-full flex bg-surface">
+            
+            <!-- Sidebar -->
+            <aside class="w-64 bg-white border-r border-gray-200 flex flex-col hidden md:flex transition-all duration-300 z-40 shadow-sm relative">
+                <div class="h-16 flex items-center px-6 border-b border-gray-100">
+                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white mr-3">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <span class="font-bold text-lg text-primary tracking-tight truncate">PPI Assistant</span>
+                </div>
+                
+                <div class="overflow-y-auto flex-grow py-4 px-3 space-y-1">
+                    <button onclick="app.navigateTo('dashboard')" id="nav-dashboard" class="sidebar-item w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                        <i class="fa-solid fa-chart-pie w-6 text-center mr-2 text-gray-400 group-hover:text-primary"></i> Dashboard
+                    </button>
+                    <button onclick="app.navigateTo('siswa')" id="nav-siswa" class="sidebar-item w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                        <i class="fa-solid fa-users w-6 text-center mr-2 text-gray-400 group-hover:text-primary"></i> Data Peserta Didik
+                    </button>
+                    <button onclick="app.navigateTo('buat-ppi')" id="nav-buat-ppi" class="sidebar-item w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                        <i class="fa-solid fa-file-pen w-6 text-center mr-2 text-gray-400 group-hover:text-primary"></i> Buat PPI Baru
+                    </button>
+                    <button onclick="app.navigateTo('monitoring')" id="nav-monitoring" class="sidebar-item w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                        <i class="fa-solid fa-chart-line w-6 text-center mr-2 text-gray-400 group-hover:text-primary"></i> Monitoring Perkembangan
+                    </button>
+                    <button onclick="app.navigateTo('riwayat')" id="nav-riwayat" class="sidebar-item w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                        <i class="fa-solid fa-folder-open w-6 text-center mr-2 text-gray-400 group-hover:text-primary"></i> Riwayat PPI
+                    </button>
+                </div>
+                
+                <div class="p-4 border-t border-gray-100">
+                    <button onclick="app.navigateTo('landing')" class="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg text-red-600 hover:bg-red-50 transition-colors">
+                        <i class="fa-solid fa-sign-out-alt w-6 text-center mr-2"></i> Keluar
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 flex flex-col h-full overflow-hidden relative">
+                
+                <!-- Mobile Header -->
+                <header class="md:hidden bg-white h-16 border-b border-gray-200 flex items-center justify-between px-4 z-30">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <span class="font-bold text-lg text-primary">PPI Assistant</span>
+                    </div>
+                    <button id="mobileMenuBtn" class="text-gray-500 hover:text-gray-700 focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </header>
+
+                <!-- Mobile Menu Overlay -->
+                <div id="mobileMenu" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex-col">
+                    <div class="bg-white w-64 h-full shadow-xl flex flex-col">
+                        <div class="p-4 border-b flex justify-between items-center">
+                            <span class="font-bold text-primary">Menu Utama</span>
+                            <button id="closeMobileMenuBtn" class="text-gray-500 p-2"><i class="fa-solid fa-times"></i></button>
+                        </div>
+                        <div class="p-2 space-y-1 flex-grow">
+                            <!-- Mobile Nav Items (Mirror desktop) -->
+                            <button onclick="app.navigateTo('dashboard'); app.toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-chart-pie w-6"></i> Dashboard</button>
+                            <button onclick="app.navigateTo('siswa'); app.toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-users w-6"></i> Data Peserta Didik</button>
+                            <button onclick="app.navigateTo('buat-ppi'); app.toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-file-pen w-6"></i> Buat PPI Baru</button>
+                            <button onclick="app.navigateTo('monitoring'); app.toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-chart-line w-6"></i> Monitoring</button>
+                            <button onclick="app.navigateTo('riwayat'); app.toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100"><i class="fa-solid fa-folder-open w-6"></i> Riwayat PPI</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scrollable Content Container -->
+                <main id="main-content" class="flex-1 overflow-y-auto p-4 md:p-8 bg-surface">
+                    <!-- Dynamic Content will be injected here -->
+                </main>
+
+                <!-- App Footer -->
+                <footer class="bg-white border-t border-gray-200 py-4 px-6 mt-auto text-center shrink-0">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-2">
+                        <div class="text-sm font-semibold text-gray-700">PPI Smart Assistant</div>
+                        <div class="text-xs text-gray-500 hidden md:block">Dibuat dengan teknologi digital untuk mendukung pendidikan inklusif</div>
+                        <div class="text-xs text-gray-500">
+                            Dibuat oleh Yahya Muhaimin &bull; &copy; <span id="currentYearApp"></span>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current year for footers
+        const year = new Date().getFullYear();
+        document.getElementById('currentYearLanding').innerText = year;
+        document.getElementById('currentYearApp').innerText = year;
+
+        // --- Database & State Management ---
+        const DB_KEY = 'ppi_smart_assistant_data';
+        
+        // Initial Mock Data if empty
+        const initialData = {
+            siswa: [
+                { id: 'S001', nama: 'Budi Santoso', nisn: '0012345678', gender: 'Laki-laki', ttl: 'Jakarta, 10 Mei 2015', usia: 11, kelas: '4', semester: '1', sekolah: 'SD Inklusif Pelangi', guruKelas: 'Siti Aminah, S.Pd', gpk: 'Ahmad Ridwan, S.Pd', kondisi: 'Autisme' }
+            ],
+            asesmen: {
+                'S001': { akademik: 'Membaca terbata-bata, menulis perlu bantuan, berhitung dasar penjumlahan 1-10', komunikasi: 'Bisa merespon panggilan, kosakata terbatas', sosial: 'Sering bermain sendiri, kurang kontak mata', motorik: 'Motorik kasar baik, motorik halus perlu stimulasi untuk memegang pensil' }
+            },
+            ppi: {
+                'S001': [] // Array of PPI objects
+            },
+            monitoring: {
+                'S001': []
+            }
+        };
+
+        const app = {
+            state: {
+                currentView: 'landing',
+                data: (() => {
+                    try {
+                        const saved = localStorage.getItem(DB_KEY);
+                        return saved ? JSON.parse(saved) : initialData;
+                    } catch (error) {
+                        try {
+                            const raw = localStorage.getItem(DB_KEY);
+                            if (raw) localStorage.setItem('ppi_smart_assistant_corrupt_backup', raw);
+                        } catch (_) {}
+                        console.error('Data PPI lama tidak dapat dibaca; salinan mentah dicoba disimpan.', error);
+                        return initialData;
+                    }
+                })(),
+                activeStudentId: null,
+                tempPPI: {} // Hold data while creating PPI
+            },
+
+            saveData: function() {
+                localStorage.setItem(DB_KEY, JSON.stringify(this.state.data));
+            },
+
+            // --- Navigation & Rendering ---
+            navigateTo: function(view) {
+                if (view === 'landing') {
+                    document.getElementById('view-landing').classList.remove('hidden');
+                    document.getElementById('view-app').classList.add('hidden');
+                } else {
+                    document.getElementById('view-landing').classList.add('hidden');
+                    document.getElementById('view-app').classList.remove('hidden');
+                    this.state.currentView = view;
+                    this.updateSidebarUI();
+                    this.renderContent();
+                }
+            },
+
+            updateSidebarUI: function() {
+                document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('sidebar-active'));
+                const activeNav = document.getElementById(`nav-${this.state.currentView}`);
+                if (activeNav) activeNav.classList.add('sidebar-active');
+            },
+
+            toggleMobileMenu: function() {
+                const menu = document.getElementById('mobileMenu');
+                menu.classList.toggle('hidden');
+                menu.classList.toggle('flex');
+            },
+
+            renderContent: function() {
+                const container = document.getElementById('main-content');
+                container.innerHTML = ''; // Clear current
+                container.className = 'flex-1 overflow-y-auto p-4 md:p-8 bg-surface fade-in'; // Reset classes + animation
+
+                switch (this.state.currentView) {
+                    case 'dashboard':
+                        container.innerHTML = this.views.dashboard();
+                        break;
+                    case 'siswa':
+                        container.innerHTML = this.views.dataSiswa();
+                        break;
+                    case 'buat-ppi':
+                        container.innerHTML = this.views.buatPPI();
+                        break;
+                    case 'monitoring':
+                        container.innerHTML = this.views.monitoring();
+                        this.initChart(); // Initialize chart after DOM update
+                        break;
+                    case 'riwayat':
+                        container.innerHTML = this.views.riwayat();
+                        break;
+                    default:
+                        container.innerHTML = `<h2 class="text-2xl font-bold">404 - Not Found</h2>`;
+                }
+            },
+
+            // --- Utility Functions ---
+            generateId: function(prefix) {
+                return prefix + Math.random().toString(36).substr(2, 9).toUpperCase();
+            },
+            
+            getStudentById: function(id) {
+                return this.state.data.siswa.find(s => s.id === id);
+            },
+
+            // --- Streaming Chunk marker for UI logic organization ---
+            views: {
+                dashboard: function() {
+                    const totalSiswa = app.state.data.siswa.length;
+                    let totalPPIAktif = 0;
+                    Object.values(app.state.data.ppi).forEach(arr => {
+                        if(arr.length > 0) totalPPIAktif++; // Simplified logic: if has PPI history, count as active for demo
+                    });
+
+                    return `
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Dashboard Guru</h2>
+                            <p class="text-gray-500 text-sm mt-1">Ringkasan aktivitas dan data pendidikan inklusif.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+                            <!-- Card 1 -->
+                            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
+                                <div class="w-12 h-12 rounded-full bg-blue-100 text-primary flex items-center justify-center text-xl mr-4">
+                                    <i class="fa-solid fa-users"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500 font-medium">Total Peserta Didik</p>
+                                    <p class="text-2xl font-bold text-gray-800">${totalSiswa}</p>
+                                </div>
+                            </div>
+                            <!-- Card 2 -->
+                            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
+                                <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl mr-4">
+                                    <i class="fa-solid fa-file-signature"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500 font-medium">PPI Aktif</p>
+                                    <p class="text-2xl font-bold text-gray-800">${totalPPIAktif}</p>
+                                </div>
+                            </div>
+                            <!-- Card 3 -->
+                            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
+                                <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xl mr-4">
+                                    <i class="fa-solid fa-clipboard-check"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500 font-medium">Evaluasi Bulan Ini</p>
+                                    <p class="text-2xl font-bold text-gray-800">3</p>
+                                </div>
+                            </div>
+                            <!-- Card 4 -->
+                            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center">
+                                <div class="w-12 h-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xl mr-4">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500 font-medium">Progress Terpantau</p>
+                                    <p class="text-2xl font-bold text-gray-800">12</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions & Recent -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100">
+                                <div class="p-5 border-b border-gray-100 flex justify-between items-center">
+                                    <h3 class="font-bold text-gray-800">Siswa Terbaru</h3>
+                                    <button onclick="app.navigateTo('siswa')" class="text-sm text-primary hover:underline">Lihat Semua</button>
+                                </div>
+                                <div class="p-0">
+                                    <table class="w-full text-sm text-left">
+                                        <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                                            <tr>
+                                                <th class="px-6 py-3 font-medium">Nama Siswa</th>
+                                                <th class="px-6 py-3 font-medium">Kelas</th>
+                                                <th class="px-6 py-3 font-medium">Kondisi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-100">
+                                            ${app.state.data.siswa.slice(-5).reverse().map(s => `
+                                                <tr class="hover:bg-gray-50">
+                                                    <td class="px-6 py-4 font-medium text-gray-800">${s.nama}</td>
+                                                    <td class="px-6 py-4">${s.kelas}</td>
+                                                    <td class="px-6 py-4"><span class="bg-blue-50 text-primary px-2 py-1 rounded text-xs font-semibold">${s.kondisi}</span></td>
+                                                </tr>
+                                            `).join('') || `<tr><td colspan="3" class="px-6 py-4 text-center text-gray-500">Belum ada data</td></tr>`}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+                                <h3 class="font-bold text-gray-800 mb-4">Aksi Cepat</h3>
+                                <div class="space-y-3">
+                                    <button onclick="app.navigateTo('buat-ppi')" class="w-full flex items-center p-3 rounded-lg border border-gray-200 hover:border-primary hover:bg-blue-50 transition-colors group">
+                                        <div class="w-10 h-10 rounded bg-gray-100 group-hover:bg-primary group-hover:text-white flex items-center justify-center text-gray-500 transition-colors mr-3">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </div>
+                                        <div class="text-left">
+                                            <p class="font-semibold text-gray-800 text-sm">Buat PPI Baru</p>
+                                            <p class="text-xs text-gray-500">Mulai rancang program siswa</p>
+                                        </div>
+                                    </button>
+                                    <button onclick="app.navigateTo('siswa')" class="w-full flex items-center p-3 rounded-lg border border-gray-200 hover:border-emerald-500 hover:bg-emerald-50 transition-colors group">
+                                        <div class="w-10 h-10 rounded bg-gray-100 group-hover:bg-emerald-500 group-hover:text-white flex items-center justify-center text-gray-500 transition-colors mr-3">
+                                            <i class="fa-solid fa-user-plus"></i>
+                                        </div>
+                                        <div class="text-left">
+                                            <p class="font-semibold text-gray-800 text-sm">Tambah Siswa</p>
+                                            <p class="text-xs text-gray-500">Input data peserta didik baru</p>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                },
+
+                dataSiswa: function() {
+                    return `
+                        <div class="flex justify-between items-end mb-6">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">Data Peserta Didik</h2>
+                                <p class="text-gray-500 text-sm mt-1">Kelola data identitas dan profil siswa berkebutuhan khusus.</p>
+                            </div>
+                            <button onclick="document.getElementById('modalTambahSiswa').classList.remove('hidden')" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow text-sm font-medium transition-colors flex items-center">
+                                <i class="fa-solid fa-plus mr-2"></i> Tambah Siswa
+                            </button>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="bg-gray-50 text-gray-500 uppercase text-xs border-b border-gray-200">
+                                        <tr>
+                                            <th class="px-6 py-4 font-semibold">Nama & NISN</th>
+                                            <th class="px-6 py-4 font-semibold">Kelas</th>
+                                            <th class="px-6 py-4 font-semibold">Profil Kebutuhan</th>
+                                            <th class="px-6 py-4 font-semibold text-right">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100">
+                                        ${app.state.data.siswa.map(s => `
+                                            <tr class="hover:bg-gray-50 transition-colors">
+                                                <td class="px-6 py-4">
+                                                    <div class="font-bold text-gray-800">${s.nama}</div>
+                                                    <div class="text-xs text-gray-500">${s.nisn}</div>
+                                                </td>
+                                                <td class="px-6 py-4">${s.kelas}</td>
+                                                <td class="px-6 py-4">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                        ${s.kondisi}
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 text-right">
+                                                    <button onclick="app.editSiswa('${s.id}')" class="text-gray-400 hover:text-primary mx-1" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                                                    <button onclick="app.deleteSiswa('${s.id}')" class="text-gray-400 hover:text-red-500 mx-1" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                        `).join('') || `<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">Belum ada data siswa. Silakan tambah data baru.</td></tr>`}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Modal Tambah Siswa -->
+                        <div id="modalTambahSiswa" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+                            <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
+                                    <h3 class="text-lg font-bold text-gray-800">Tambah Peserta Didik Baru</h3>
+                                    <button onclick="document.getElementById('modalTambahSiswa').classList.add('hidden')" class="text-gray-400 hover:text-gray-700">
+                                        <i class="fa-solid fa-times text-xl"></i>
+                                    </button>
+                                </div>
+                                <div class="p-6">
+                                    <form id="formTambahSiswa" onsubmit="app.submitSiswa(event)">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                            <div class="form-group col-span-2 md:col-span-1">
+                                                <label>Nama Lengkap</label>
+                                                <input type="text" name="nama" required class="form-input" placeholder="Masukkan nama lengkap">
+                                            </div>
+                                            <div class="form-group col-span-2 md:col-span-1">
+                                                <label>NISN</label>
+                                                <input type="text" name="nisn" class="form-input" placeholder="Nomor Induk Siswa Nasional">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Jenis Kelamin</label>
+                                                <select name="gender" class="form-input">
+                                                    <option value="Laki-laki">Laki-laki</option>
+                                                    <option value="Perempuan">Perempuan</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Usia (Tahun)</label>
+                                                <input type="number" name="usia" required class="form-input" placeholder="Contoh: 10">
+                                            </div>
+                                            <div class="form-group col-span-2">
+                                                <label>Tempat, Tanggal Lahir</label>
+                                                <input type="text" name="ttl" class="form-input" placeholder="Contoh: Bandung, 17 Agustus 2012">
+                                            </div>
+                                            
+                                            <div class="col-span-2 border-t border-gray-100 my-2 pt-2">
+                                                <h4 class="font-semibold text-gray-700 text-sm mb-3">Informasi Sekolah</h4>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label>Kelas</label>
+                                                <input type="text" name="kelas" required class="form-input" placeholder="Contoh: 4A">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Semester</label>
+                                                <select name="semester" class="form-input">
+                                                    <option value="1">1 (Ganjil)</option>
+                                                    <option value="2">2 (Genap)</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-span-2">
+                                                <label>Nama Sekolah</label>
+                                                <input type="text" name="sekolah" required class="form-input" value="SD Inklusif">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Guru Kelas</label>
+                                                <input type="text" name="guruKelas" class="form-input" placeholder="Nama Guru Kelas">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Guru Pendamping Khusus</label>
+                                                <input type="text" name="gpk" class="form-input" placeholder="Nama GPK">
+                                            </div>
+
+                                            <div class="col-span-2 border-t border-gray-100 my-2 pt-2">
+                                                <h4 class="font-semibold text-gray-700 text-sm mb-3">Profil Kebutuhan</h4>
+                                            </div>
+
+                                            <div class="form-group col-span-2">
+                                                <label>Kondisi Utama</label>
+                                                <select name="kondisi" required class="form-input bg-blue-50 border-blue-200 text-blue-900 font-medium">
+                                                    <option value="" disabled selected>Pilih profil kebutuhan...</option>
+                                                    <option value="Autisme">Autisme</option>
+                                                    <option value="ADHD">ADHD</option>
+                                                    <option value="Slow Learner">Slow Learner</option>
+                                                    <option value="Tunagrahita Ringan">Tunagrahita Ringan</option>
+                                                    <option value="Kesulitan Belajar">Kesulitan Belajar (Spesifik)</option>
+                                                    <option value="Hambatan Komunikasi">Hambatan Komunikasi</option>
+                                                    <option value="Hambatan Motorik">Hambatan Motorik</option>
+                                                    <option value="Lainnya">Lainnya</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-end gap-3 mt-6 border-t border-gray-100 pt-4">
+                                            <button type="button" onclick="document.getElementById('modalTambahSiswa').classList.add('hidden')" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 text-sm font-medium">Batal</button>
+                                            <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 text-sm font-medium shadow-sm">Simpan Data</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                },
+
+                buatPPI: function() {
+                    const step = app.state.ppiStep || 1;
+                    const siswaOpts = app.state.data.siswa.map(s => `<option value="${s.id}">${s.nama} (${s.kondisi})</option>`).join('');
+                    
+                    return `
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Penyusunan PPI</h2>
+                            <p class="text-gray-500 text-sm mt-1">Ikuti langkah-langkah untuk menyusun Program Pembelajaran Individual.</p>
+                        </div>
+
+                        <!-- Progress Steps -->
+                        <div class="mb-8">
+                            <div class="flex items-center justify-between w-full relative">
+                                <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-200 -z-10"></div>
+                                <div class="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-primary -z-10 transition-all duration-500" style="width: ${((step-1)/3)*100}%"></div>
+                                
+                                ${[1, 2, 3, 4].map(i => `
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${step >= i ? 'bg-primary text-white shadow-md' : 'bg-gray-200 text-gray-500'} transition-colors">
+                                            ${step > i ? '<i class="fa-solid fa-check"></i>' : i}
+                                        </div>
+                                        <span class="text-xs mt-2 font-medium ${step >= i ? 'text-primary' : 'text-gray-400'} hidden sm:block">
+                                            ${i===1?'Asesmen Awal': i===2?'AI Generator': i===3?'Desain Program': 'Review & Export'}
+                                        </span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Form Container -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            
+                            ${step === 1 ? `
+                                <!-- STEP 1: Pilih Siswa & Asesmen -->
+                                <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">1. Pilih Peserta Didik & Asesmen Awal</h3>
+                                
+                                <div class="form-group mb-6">
+                                    <label>Pilih Peserta Didik</label>
+                                    <select id="selectSiswaPPI" class="form-input bg-blue-50 border-blue-200" onchange="app.loadAsesmenSiswa(this.value)">
+                                        <option value="" disabled selected>-- Pilih Siswa --</option>
+                                        ${siswaOpts}
+                                    </select>
+                                </div>
+
+                                <div id="asesmenFormContainer" class="hidden">
+                                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded-r-lg">
+                                        <div class="flex">
+                                            <div class="flex-shrink-0">
+                                                <i class="fa-solid fa-info-circle text-yellow-400"></i>
+                                            </div>
+                                            <div class="ml-3">
+                                                <p class="text-sm text-yellow-700">
+                                                    Isi hasil asesmen awal kondisi peserta didik saat ini (Present Level of Performance). Data ini penting untuk menyusun tujuan.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="form-group">
+                                            <label class="text-primary"><i class="fa-solid fa-book-open mr-1"></i> A. Kemampuan Akademik</label>
+                                            <textarea id="ases_akademik" rows="3" class="form-input resize-none" placeholder="Contoh: Membaca suku kata, menulis masih tebal-tipis, belum paham konsep penjumlahan."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="text-emerald-600"><i class="fa-solid fa-comments mr-1"></i> B. Komunikasi</label>
+                                            <textarea id="ases_komunikasi" rows="3" class="form-input resize-none" placeholder="Kemampuan berbicara, memahami bahasa, interaksi."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="text-purple-600"><i class="fa-solid fa-users mr-1"></i> C. Perilaku dan Emosi</label>
+                                            <textarea id="ases_sosial" rows="3" class="form-input resize-none" placeholder="Konsentrasi, regulasi emosi, interaksi dengan teman."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="text-orange-600"><i class="fa-solid fa-child-reaching mr-1"></i> D. Motorik</label>
+                                            <textarea id="ases_motorik" rows="3" class="form-input resize-none" placeholder="Motorik halus (menulis, menggunting) dan kasar."></textarea>
+                                        </div>
+                                        <div class="form-group col-span-1 md:col-span-2">
+                                            <label class="text-gray-700"><i class="fa-solid fa-clipboard mr-1"></i> Catatan Tambahan (Opsional)</label>
+                                            <input type="text" id="ases_catatan" class="form-input" placeholder="Informasi medis atau hal penting lainnya.">
+                                        </div>
+                                    </div>
+                                    <div class="mt-8 flex justify-end">
+                                        <button onclick="app.nextStepPPI(2)" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-medium">Selanjutnya: AI Generator <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${step === 2 ? `
+                                <!-- STEP 2: AI Generator -->
+                                <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-purple-500 mr-2"></i> 2. AI PPI Generator (Asisten Penyusunan)
+                                </h3>
+                                
+                                <p class="text-sm text-gray-600 mb-4">Gunakan bantuan AI untuk merumuskan tujuan dan strategi berdasarkan deskripsi singkat masalah utama siswa.</p>
+
+                                <div class="bg-purple-50 rounded-lg p-5 border border-purple-100 mb-6">
+                                    <div class="form-group mb-4">
+                                        <label class="text-purple-800 font-semibold">Prompt Generator</label>
+                                        <textarea id="aiPrompt" rows="3" class="form-input border-purple-300 focus:border-purple-500 focus:ring-purple-500 bg-white" placeholder="Contoh: Anak kelas 4 dengan ADHD, sulit fokus selama pembelajaran, kemampuan matematika dasar masih rendah."></textarea>
+                                        <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
+                                            <strong>Perlindungan data:</strong> AI hanya membutuhkan informasi kemampuan dan kebutuhan belajar yang relevan. Jangan masukkan nama, NISN, alamat, nomor telepon, foto, atau identitas pribadi. Hasil AI adalah draf yang wajib ditinjau guru dan tim terkait.
+                                            <label class="mt-2 flex items-start gap-2 font-medium"><input type="checkbox" id="aiPrivacyConsent" class="mt-0.5"> Saya memastikan informasi yang dikirim sudah dianonimkan dan saya berwenang menggunakannya.</label>
+                                        </div>
+                                    </div>
+                                    <button onclick="app.generateAI()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition font-medium text-sm flex items-center w-full justify-center shadow-sm">
+                                        <i class="fa-solid fa-bolt mr-2"></i> Generate Draft PPI
+                                    </button>
+                                </div>
+
+                                <div id="aiResultContainer" class="hidden">
+                                    <h4 class="font-bold text-gray-700 mb-3 text-sm uppercase tracking-wider">Hasil Generate (Draft):</h4>
+                                    <div id="aiResultText" class="bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm text-gray-700 whitespace-pre-wrap font-mono overflow-y-auto max-h-64 mb-6">
+                                        <!-- AI result inject here -->
+                                    </div>
+                                    <div class="flex gap-3 justify-end border-t pt-4">
+                                        <button onclick="app.nextStepPPI(1)" class="px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-lg text-sm font-medium">Kembali</button>
+                                        <button onclick="app.nextStepPPI(3, true)" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-medium text-sm">Gunakan Draft & Lanjut <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                                    </div>
+                                </div>
+                                <div id="skipAiContainer" class="flex justify-between border-t pt-4 mt-6">
+                                    <button onclick="app.nextStepPPI(1)" class="px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-lg text-sm font-medium">Kembali</button>
+                                    <button onclick="app.nextStepPPI(3)" class="text-gray-500 hover:text-primary px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 hover:border-primary">Lewati AI, Isi Manual <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                                </div>
+                            ` : ''}
+
+                            ${step === 3 ? `
+                                <!-- STEP 3: Desain Form PPI -->
+                                <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">3. Desain Program Pembelajaran Individual</h3>
+                                
+                                <div class="space-y-8">
+                                    <!-- Tujuan -->
+                                    <div class="bg-blue-50/50 p-5 rounded-xl border border-blue-100">
+                                        <h4 class="font-semibold text-primary mb-3"><i class="fa-solid fa-bullseye mr-2"></i>Tujuan Pembelajaran</h4>
+                                        <div class="form-group mb-3">
+                                            <label>Tujuan Jangka Panjang (1 Semester/Tahun)</label>
+                                            <input type="text" id="ppi_tujuan_panjang" class="form-input" placeholder="Contoh: Siswa mampu melakukan operasi hitung penjumlahan 1-20 secara mandiri.">
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label>Tujuan Jangka Pendek</label>
+                                            <textarea id="ppi_tujuan_pendek" rows="3" class="form-input" placeholder="1. Siswa mampu...\n2. Siswa dapat..."></textarea>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label>Indikator Keberhasilan yang Dapat Diamati</label>
+                                            <textarea id="ppi_indikator" rows="3" class="form-input" placeholder="Tuliskan indikator terukur untuk menilai ketercapaian tujuan..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Target Waktu Evaluasi</label>
+                                            <select id="ppi_target_waktu" class="form-input w-full md:w-1/3">
+                                                <option value="1 Bulan">1 Bulan</option>
+                                                <option value="3 Bulan">3 Bulan</option>
+                                                <option value="6 Bulan">6 Bulan (1 Semester)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Strategi -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="bg-emerald-50/50 p-5 rounded-xl border border-emerald-100">
+                                            <h4 class="font-semibold text-emerald-700 mb-3"><i class="fa-solid fa-lightbulb mr-2"></i>Strategi & Metode</h4>
+                                            <div class="space-y-2 text-sm">
+                                                <label class="flex items-center"><input type="checkbox" value="Visual learning" class="cb-metode mr-2 rounded text-emerald-600 focus:ring-emerald-500"> Visual learning</label>
+                                                <label class="flex items-center"><input type="checkbox" value="Demonstrasi" class="cb-metode mr-2 rounded text-emerald-600 focus:ring-emerald-500"> Demonstrasi</label>
+                                                <label class="flex items-center"><input type="checkbox" value="Pembelajaran multisensori" class="cb-metode mr-2 rounded text-emerald-600 focus:ring-emerald-500"> Pembelajaran multisensori</label>
+                                                <label class="flex items-center"><input type="checkbox" value="Repetisi (Pengulangan)" class="cb-metode mr-2 rounded text-emerald-600 focus:ring-emerald-500"> Repetisi (Pengulangan)</label>
+                                                <label class="flex items-center"><input type="checkbox" value="Pendampingan individual" class="cb-metode mr-2 rounded text-emerald-600 focus:ring-emerald-500"> Pendampingan individual</label>
+                                                <label class="flex items-center"><input type="checkbox" value="Cooperative learning" class="cb-metode mr-2 rounded text-emerald-600 focus:ring-emerald-500"> Cooperative learning</label>
+                                            </div>
+                                            <textarea id="ppi_strategi_tambahan" rows="2" class="form-input mt-3 bg-white" placeholder="Strategi tambahan (satu strategi per baris)..."></textarea>
+                                        </div>
+                                        <div class="bg-orange-50/50 p-5 rounded-xl border border-orange-100">
+                                            <h4 class="font-semibold text-orange-700 mb-3"><i class="fa-solid fa-cubes mr-2"></i>Media Pembelajaran</h4>
+                                            <div class="space-y-2 text-sm">
+                                                <label class="flex items-center"><input type="checkbox" value="Gambar/Poster" class="cb-media mr-2 rounded text-orange-500"> Gambar / Poster</label>
+                                                <label class="flex items-center"><input type="checkbox" value="Video Interaktif" class="cb-media mr-2 rounded text-orange-500"> Video Interaktif</label>
+                                                <label class="flex items-center"><input type="checkbox" value="Flash card" class="cb-media mr-2 rounded text-orange-500"> Flash card</label>
+                                                <label class="flex items-center"><input type="checkbox" value="Benda Manipulatif/Kongkret" class="cb-media mr-2 rounded text-orange-500"> Benda Manipulatif/Kongkret</label>
+                                                <label class="flex items-center"><input type="checkbox" value="Lembar Kerja Modifikasi" class="cb-media mr-2 rounded text-orange-500"> Lembar Kerja Modifikasi</label>
+                                            </div>
+                                            <textarea id="ppi_media_tambahan" rows="2" class="form-input mt-3 bg-white" placeholder="Media tambahan (satu media per baris)..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Adaptasi -->
+                                    <div>
+                                        <h4 class="font-semibold text-gray-700 mb-3"><i class="fa-solid fa-sliders mr-2"></i>Adaptasi Pembelajaran</h4>
+                                        <div class="overflow-x-auto border rounded-lg">
+                                            <table class="w-full text-sm text-left">
+                                                <thead class="bg-gray-100">
+                                                    <tr>
+                                                        <th class="px-4 py-2 w-1/4">Komponen</th>
+                                                        <th class="px-4 py-2 w-3/4">Bentuk Adaptasi untuk Peserta Didik</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="divide-y divide-gray-200">
+                                                    <tr><td class="px-4 py-2 font-medium">Materi</td><td class="p-1"><input type="text" id="adaptasi_materi" class="w-full border-0 p-2 focus:ring-0" placeholder="Penyederhanaan materi..."></td></tr>
+                                                    <tr><td class="px-4 py-2 font-medium">Instruksi</td><td class="p-1"><input type="text" id="adaptasi_instruksi" class="w-full border-0 p-2 focus:ring-0" placeholder="Instruksi singkat 1-2 langkah..."></td></tr>
+                                                    <tr><td class="px-4 py-2 font-medium">Waktu</td><td class="p-1"><input type="text" id="adaptasi_waktu" class="w-full border-0 p-2 focus:ring-0" placeholder="Tambahan waktu 15 menit..."></td></tr>
+                                                    <tr><td class="px-4 py-2 font-medium">Evaluasi</td><td class="p-1"><input type="text" id="adaptasi_evaluasi" class="w-full border-0 p-2 focus:ring-0" placeholder="Tes lisan, kurangi jumlah soal..."></td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Program Mingguan (Dynamic Table) -->
+                                    <div>
+                                        <div class="flex justify-between items-center mb-3">
+                                            <h4 class="font-semibold text-gray-700"><i class="fa-solid fa-calendar-week mr-2"></i>Program Mingguan</h4>
+                                            <button onclick="app.addMingguRow()" class="text-xs bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-gray-700"><i class="fa-solid fa-plus"></i> Tambah Minggu</button>
+                                        </div>
+                                        <div class="overflow-x-auto border rounded-lg">
+                                            <table class="w-full text-sm text-left" id="tableProgramMingguan">
+                                                <thead class="bg-gray-100">
+                                                    <tr>
+                                                        <th class="px-4 py-2 w-16">Minggu</th>
+                                                        <th class="px-4 py-2">Target / Aktivitas</th>
+                                                        <th class="px-4 py-2 w-32">Evaluasi</th>
+                                                        <th class="px-2 py-2 w-10"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="divide-y divide-gray-200" id="tbodyProgramMingguan">
+                                                    <!-- Rows injected via JS -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="flex gap-3 justify-end mt-8 border-t pt-4">
+                                    <button onclick="app.nextStepPPI(2)" class="px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-lg text-sm font-medium">Kembali</button>
+                                    <button onclick="app.nextStepPPI(4)" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-medium text-sm shadow-sm">Simpan & Preview <i class="fa-solid fa-save ml-2"></i></button>
+                                </div>
+                            ` : ''}
+
+                            ${step === 4 ? `
+                                <!-- STEP 4: Review & Export -->
+                                <div class="text-center py-8">
+                                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fa-solid fa-check text-4xl text-green-500"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-gray-800 mb-2">PPI Berhasil Disusun!</h3>
+                                    <p class="text-gray-500 mb-8">Data Program Pembelajaran Individual telah tersimpan di sistem dan siap diunduh.</p>
+                                    
+                                    <div class="flex justify-center gap-4">
+                                        <button onclick="app.navigateTo('dashboard')" class="px-6 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 font-medium transition-colors">
+                                            Kembali ke Dashboard
+                                        </button>
+                                        <button onclick="app.exportPDF()" class="px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 font-medium transition-colors shadow-lg flex items-center">
+                                            <i class="fa-solid fa-file-pdf mr-2"></i> DOWNLOAD PPI (PDF)
+                                        </button>
+                                        <button onclick="app.navigateTo('buat-ppi')" class="px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-700 font-medium transition-colors">Buat PPI Baru</button>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                },
+
+                monitoring: function() {
+                    const siswaOpts = app.state.data.siswa.map(s => `<option value="${s.id}">${s.nama}</option>`).join('');
+                    
+                    return `
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Monitoring Perkembangan</h2>
+                            <p class="text-gray-500 text-sm mt-1">Pantau progress ketercapaian tujuan pembelajaran siswa.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Input Section -->
+                            <div class="lg:col-span-1 bg-white p-5 rounded-xl border border-gray-100 shadow-sm h-fit">
+                                <h3 class="font-bold border-b pb-2 mb-4">Input Data Evaluasi</h3>
+                                <div class="form-group mb-3">
+                                    <label>Pilih Siswa</label>
+                                    <select id="mon_siswa" class="form-input" onchange="app.updateChart()">
+                                        <option value="" disabled selected>-- Pilih Siswa --</option>
+                                        ${siswaOpts}
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Bulan Evaluasi</label>
+                                    <select id="mon_bulan" class="form-input">
+                                        <option value="Januari">Januari</option><option value="Februari">Februari</option>
+                                        <option value="Maret">Maret</option><option value="April">April</option>
+                                        <option value="Mei">Mei</option><option value="Juni">Juni</option>
+                                        <option value="Juli">Juli</option><option value="Agustus">Agustus</option>
+                                        <option value="September">September</option><option value="Oktober">Oktober</option>
+                                        <option value="November">November</option><option value="Desember">Desember</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Tahun Evaluasi</label>
+                                    <input type="number" id="mon_tahun" class="form-input" min="2000" max="2100" value="${new Date().getFullYear()}">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Capaian (%)</label>
+                                    <input type="number" id="mon_capaian" class="form-input" min="0" max="100" placeholder="0-100">
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label>Catatan Guru</label>
+                                    <textarea id="mon_catatan" rows="2" class="form-input text-sm" placeholder="Catatan singkat..."></textarea>
+                                </div>
+                                <button onclick="app.addMonitoringData()" class="w-full bg-accent text-white py-2 rounded-lg font-medium hover:bg-green-600 transition shadow-sm">
+                                    <i class="fa-solid fa-plus mr-1"></i> Tambah Data
+                                </button>
+                            </div>
+
+                            <!-- Chart Section -->
+                            <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col">
+                                <h3 class="font-bold border-b pb-2 mb-4">Grafik Perkembangan (Progress Chart)</h3>
+                                <div class="flex-grow relative min-h-[300px] w-full flex items-center justify-center bg-gray-50 rounded-lg">
+                                    <canvas id="progressChart"></canvas>
+                                    <div id="chartEmptyState" class="absolute inset-0 flex items-center justify-center text-gray-400 text-sm hidden">
+                                        Pilih siswa untuk melihat grafik
+                                    </div>
+                                </div>
+                                
+                                <!-- Log History (Simple) -->
+                                <div class="mt-6 border-t pt-4">
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-2">Riwayat Catatan:</h4>
+                                    <div id="mon_history_list" class="space-y-2 max-h-40 overflow-y-auto text-sm">
+                                        <p class="text-gray-400 italic">Belum ada catatan.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                },
+                
+                riwayat: function() {
+                    // Collect all PPIs
+                    let allPPI = [];
+                    Object.keys(app.state.data.ppi).forEach(siswaId => {
+                        app.state.data.ppi[siswaId].forEach(p => {
+                            const siswa = app.getStudentById(siswaId);
+                            if(siswa) {
+                                allPPI.push({...p, siswaNama: siswa.nama, kondisi: siswa.kondisi});
+                            }
+                        });
+                    });
+                    
+                    // Sort descending by date (simple approach: reverse)
+                    allPPI.reverse();
+
+                    return `
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Riwayat PPI</h2>
+                            <p class="text-gray-500 text-sm mt-1">Daftar dokumen Program Pembelajaran Individual yang telah disusun.</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="bg-gray-50 text-gray-500 uppercase text-xs border-b border-gray-200">
+                                        <tr>
+                                            <th class="px-6 py-4 font-semibold">Tanggal Dibuat</th>
+                                            <th class="px-6 py-4 font-semibold">Nama Siswa</th>
+                                            <th class="px-6 py-4 font-semibold">Tujuan Utama</th>
+                                            <th class="px-6 py-4 font-semibold text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100">
+                                        ${allPPI.map(p => `
+                                            <tr class="hover:bg-gray-50">
+                                                <td class="px-6 py-4 whitespace-nowrap text-gray-500">${p.tanggal}</td>
+                                                <td class="px-6 py-4 font-medium text-gray-800">
+                                                    ${p.siswaNama}<br>
+                                                    <span class="text-xs text-blue-600 bg-blue-50 px-1 rounded">${p.kondisi}</span>
+                                                </td>
+                                                <td class="px-6 py-4 truncate max-w-xs" title="${p.tujuan_panjang}">${p.tujuan_panjang || '-'}</td>
+                                                <td class="px-6 py-4 text-center">
+                                                    <button onclick="app.reExportPDF('${p.id}')" class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1 rounded text-xs font-medium transition-colors border border-red-200">
+                                                        <i class="fa-solid fa-file-pdf mr-1"></i> Download
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        `).join('') || `<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">Belum ada riwayat pembuatan PPI.</td></tr>`}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                }
+            },
+
+            // --- Form Logic & Data Handlers ---
+            
+            submitSiswa: function(e) {
+                e.preventDefault();
+                const form = e.target;
+                const newSiswa = {
+                    id: this.generateId('S'),
+                    nama: form.nama.value,
+                    nisn: form.nisn.value,
+                    gender: form.gender.value,
+                    usia: form.usia.value,
+                    ttl: form.ttl.value,
+                    kelas: form.kelas.value,
+                    semester: form.semester.value,
+                    sekolah: form.sekolah.value,
+                    guruKelas: form.guruKelas.value,
+                    gpk: form.gpk.value,
+                    kondisi: form.kondisi.value
+                };
+                
+                this.state.data.siswa.push(newSiswa);
+                this.saveData();
+                document.getElementById('modalTambahSiswa').classList.add('hidden');
+                form.reset();
+                this.renderContent(); // Refresh list
+            },
+
+            deleteSiswa: function(id) {
+                if(confirm('Yakin ingin menghapus data siswa ini? Semua data terkait (Asesmen, PPI) juga akan hilang.')) {
+                    this.state.data.siswa = this.state.data.siswa.filter(s => s.id !== id);
+                    delete this.state.data.asesmen[id];
+                    delete this.state.data.ppi[id];
+                    delete this.state.data.monitoring[id];
+                    this.saveData();
+                    this.renderContent();
+                }
+            },
+
+            // --- PPI Wizard Logic ---
+            loadAsesmenSiswa: function(id) {
+                this.state.activeStudentId = id;
+                const container = document.getElementById('asesmenFormContainer');
+                if(!id) {
+                    container.classList.add('hidden');
+                    return;
+                }
+                
+                container.classList.remove('hidden');
+                
+                // Pre-fill if exists
+                const existing = this.state.data.asesmen[id];
+                document.getElementById('ases_akademik').value = existing ? existing.akademik : '';
+                document.getElementById('ases_komunikasi').value = existing ? existing.komunikasi : '';
+                document.getElementById('ases_sosial').value = existing ? existing.sosial : '';
+                document.getElementById('ases_motorik').value = existing ? existing.motorik : '';
+                document.getElementById('ases_catatan').value = existing ? existing.catatan : '';
+            },
+
+            nextStepPPI: function(step, useAiDraft = false) {
+                if(step === 2) {
+                    // Save Step 1 (Asesmen)
+                    const sId = this.state.activeStudentId;
+                    if(!sId) return alert('Pilih siswa terlebih dahulu!');
+                    
+                    this.state.data.asesmen[sId] = {
+                        akademik: document.getElementById('ases_akademik').value,
+                        komunikasi: document.getElementById('ases_komunikasi').value,
+                        sosial: document.getElementById('ases_sosial').value,
+                        motorik: document.getElementById('ases_motorik').value,
+                        catatan: document.getElementById('ases_catatan').value
+                    };
+                    this.saveData();
+                }
+                
+                if(step === 3 && useAiDraft && this.state.aiDraft) {
+                    // Store draft to populate step 3
+                    this.state.tempPPI.tujuan_panjang = this.state.aiDraft.tp;
+                    this.state.tempPPI.tujuan_pendek = this.state.aiDraft.tpd;
+                    this.state.tempPPI.strategi = this.state.aiDraft.strategi;
+                }
+
+                if(step === 4) {
+                    // Save Step 3 (Desain PPI)
+                    this.saveDesainPPI();
+                }
+
+                this.state.ppiStep = step;
+                this.renderContent();
+                
+                // Post-render actions for Step 3
+                if(step === 3) {
+                    this.populateMingguRows();
+                    if(useAiDraft && this.state.tempPPI) {
+                        document.getElementById('ppi_tujuan_panjang').value = this.state.tempPPI.tujuan_panjang || '';
+                        document.getElementById('ppi_tujuan_pendek').value = this.state.tempPPI.tujuan_pendek || '';
+                        // Auto-check strategies (simplified)
+                        if(this.state.tempPPI.strategi) {
+                           document.querySelectorAll('.cb-metode').forEach(cb => {
+                               if(this.state.tempPPI.strategi.toLowerCase().includes(cb.value.toLowerCase())) cb.checked = true;
+                           });
+                        }
+                    }
+                }
+            },
+
+            generateAI: function() {
+                const prompt = document.getElementById('aiPrompt').value;
+                if(!prompt) return alert('Silakan masukkan deskripsi masalah siswa.');
+                
+                const btn = event.currentTarget;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Generating...';
+                btn.disabled = true;
+
+                // Simulate AI API Call Delay
+                setTimeout(() => {
+                    const resultText = `Berdasarkan profil: "${prompt}"
+
+[ REKOMENDASI PPI ]
+
+A. Tujuan Jangka Panjang:
+Siswa mampu meningkatkan fokus dan durasi atensi selama kegiatan pembelajaran klasikal sebesar 50% dan menguasai konsep dasar matematika (penjumlahan/pengurangan) menggunakan alat bantu konkret.
+
+B. Tujuan Jangka Pendek:
+1. Siswa mampu merespon instruksi verbal dalam 2 kali pengulangan.
+2. Siswa mampu duduk tenang selama 15 menit berturut-turut pada sesi matematika.
+3. Siswa mampu menyelesaikan 5 soal penjumlahan dasar dengan benda konkret.
+
+C. Strategi & Metode yang Disarankan:
+- Pendampingan individual (prompting)
+- Visual learning (jadwal visual)
+- Pembelajaran multisensori (manipulatif)
+- Repetisi dan pemberian jeda (brain break)
+
+D. Adaptasi:
+Materi: Disederhanakan, fokus pada esensi.
+Waktu: Diberikan tambahan waktu dan jeda istirahat singkat.`;
+                    
+                    document.getElementById('aiResultText').innerText = resultText;
+                    document.getElementById('aiResultContainer').classList.remove('hidden');
+                    document.getElementById('skipAiContainer').classList.add('hidden');
+                    
+                    btn.innerHTML = '<i class="fa-solid fa-bolt mr-2"></i> Generate Draft PPI';
+                    btn.disabled = false;
+
+                    // Save draft internally
+                    this.state.aiDraft = {
+                        tp: "Siswa mampu meningkatkan fokus selama pembelajaran dan menguasai konsep dasar matematika dengan alat bantu konkret.",
+                        tpd: "1. Mampu duduk tenang 15 menit.\n2. Menyelesaikan 5 soal penjumlahan dengan benda.",
+                        strategi: "Visual learning, Pendampingan individual"
+                    };
+
+                }, 1500);
+            },
+
+            // Dynamic Table Logic for Step 3
+            mingguCount: 0,
+            addMingguRow: function() {
+                this.mingguCount++;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-1"><input type="text" class="w-full border-0 p-2 focus:ring-0 text-center" value="M-${this.mingguCount}"></td>
+                    <td class="p-1"><input type="text" class="w-full border-0 p-2 focus:ring-0" placeholder="Aktivitas..."></td>
+                    <td class="p-1"><input type="text" class="w-full border-0 p-2 focus:ring-0" placeholder="Kriteria lulus..."></td>
+                    <td class="p-1 text-center"><button onclick="this.closest('tr').remove()" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-times"></i></button></td>
+                `;
+                document.getElementById('tbodyProgramMingguan').appendChild(tr);
+            },
+            populateMingguRows: function() {
+                this.mingguCount = 0;
+                const tbody = document.getElementById('tbodyProgramMingguan');
+                if(!tbody) return;
+                tbody.innerHTML = '';
+                this.addMingguRow(); // Add default 1 row
+            },
+
+            saveDesainPPI: function() {
+                const sId = this.state.activeStudentId;
+                
+                // Gather Checkboxes
+                let metode = []; document.querySelectorAll('.cb-metode:checked').forEach(c => metode.push(c.value));
+                let media = []; document.querySelectorAll('.cb-media:checked').forEach(c => media.push(c.value));
+                
+                // Gather Weekly Program
+                let mingguan = [];
+                document.querySelectorAll('#tbodyProgramMingguan tr').forEach(tr => {
+                    const inputs = tr.querySelectorAll('input');
+                    if(inputs[1].value) { // only save if activity is filled
+                        mingguan.push({ minggu: inputs[0].value, aktivitas: inputs[1].value, evaluasi: inputs[2].value });
+                    }
+                });
+
+                const newPPI = {
+                    id: this.generateId('PPI'),
+                    tanggal: new Date().toLocaleDateString('id-ID'),
+                    tujuan_panjang: document.getElementById('ppi_tujuan_panjang').value,
+                    tujuan_pendek: document.getElementById('ppi_tujuan_pendek').value,
+                    target_waktu: document.getElementById('ppi_target_waktu').value,
+                    strategi: { metode, media },
+                    adaptasi: {
+                        materi: document.getElementById('adaptasi_materi').value,
+                        instruksi: document.getElementById('adaptasi_instruksi').value,
+                        waktu: document.getElementById('adaptasi_waktu').value,
+                        evaluasi: document.getElementById('adaptasi_evaluasi').value,
+                    },
+                    program_mingguan: mingguan
+                };
+
+                if(!this.state.data.ppi[sId]) this.state.data.ppi[sId] = [];
+                this.state.data.ppi[sId].push(newPPI);
+                
+                // Store current PPI ID for direct download later
+                this.state.lastCreatedPPIId = newPPI.id; 
+                this.state.lastCreatedPPISiswaId = sId;
+
+                this.saveData();
+            },
+
+            exportPDF: function() {
+                this.generatePDFDocument(this.state.lastCreatedPPIId, this.state.lastCreatedPPISiswaId);
+            },
+            
+            reExportPDF: function(ppiId) {
+                // Find student ID based on PPI ID
+                let sId = null;
+                Object.keys(this.state.data.ppi).forEach(key => {
+                    if(this.state.data.ppi[key].find(p => p.id === ppiId)) sId = key;
+                });
+                if(sId) this.generatePDFDocument(ppiId, sId);
+            },
+
+            generatePDFDocument: function(ppiId, siswaId) {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'pt', 'a4'); // points, A4 size
+                
+                const siswa = this.getStudentById(siswaId);
+                const asesmen = this.state.data.asesmen[siswaId] || {};
+                const ppi = this.state.data.ppi[siswaId].find(p => p.id === ppiId);
+
+                if(!siswa || !ppi) {
+                    alert('Data tidak lengkap untuk export PDF.');
+                    return;
+                }
+
+                // --- STYLING VARS ---
+                const margin = 40;
+                let yPos = margin;
+                const pageWidth = doc.internal.pageSize.width;
+                const contentWidth = pageWidth - (margin * 2);
+
+                // --- HELPER FUNC ---
+                const addSectionTitle = (title) => {
+                    yPos += 20;
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setFillColor(240, 240, 240);
+                    doc.rect(margin, yPos-10, contentWidth, 18, 'F');
+                    doc.text(title, margin + 5, yPos + 2);
+                    yPos += 15;
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(10);
+                };
+
+                const checkPageBreak = (neededSpace) => {
+                    if (yPos + neededSpace > doc.internal.pageSize.height - margin) {
+                        doc.addPage();
+                        yPos = margin;
+                    }
+                };
+
+                // --- 1. KOP SEKOLAH ---
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.text(siswa.sekolah.toUpperCase(), pageWidth/2, yPos, {align: 'center'});
+                yPos += 15;
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.text("Pusat Layanan Pendidikan Inklusif", pageWidth/2, yPos, {align: 'center'});
+                yPos += 10;
+                // Line
+                doc.setLineWidth(1.5);
+                doc.line(margin, yPos, pageWidth - margin, yPos);
+                yPos += 3;
+                doc.setLineWidth(0.5);
+                doc.line(margin, yPos, pageWidth - margin, yPos);
+                
+                // --- TITLE ---
+                yPos += 30;
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(12);
+                doc.text("PROGRAM PEMBELAJARAN INDIVIDUAL (PPI)", pageWidth/2, yPos, {align: 'center'});
+                yPos += 5;
+
+                // --- A. IDENTITAS ---
+                addSectionTitle("A. IDENTITAS PESERTA DIDIK");
+                
+                const idData = [
+                    ["Nama Lengkap", ": " + siswa.nama, "Kelas / Smt", ": " + siswa.kelas + " / " + siswa.semester],
+                    ["NISN", ": " + siswa.nisn, "Tahun Ajaran", ": " + new Date().getFullYear()],
+                    ["TTL", ": " + siswa.ttl, "Kondisi Utama", ": " + siswa.kondisi],
+                    ["Guru Kelas", ": " + siswa.guruKelas, "Guru Pendamping", ": " + siswa.gpk]
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    margin: { left: margin },
+                    body: idData,
+                    theme: 'plain',
+                    styles: { fontSize: 10, cellPadding: 2 },
+                    columnStyles: { 
+                        0: { cellWidth: 90, fontStyle: 'bold' }, 
+                        1: { cellWidth: 160 },
+                        2: { cellWidth: 90, fontStyle: 'bold' },
+                        3: { cellWidth: 160 }
+                    }
+                });
+                yPos = doc.lastAutoTable.finalY;
+
+                // --- B. HASIL ASESMEN ---
+                addSectionTitle("B. PRESENT LEVEL OF PERFORMANCE (Hasil Asesmen)");
+                const asesData = [
+                    ["Kemampuan Akademik", asesmen.akademik || '-'],
+                    ["Kemampuan Komunikasi", asesmen.komunikasi || '-'],
+                    ["Perilaku & Interaksi Sosial", asesmen.sosial || '-'],
+                    ["Motorik", asesmen.motorik || '-'],
+                    ["Catatan Penting", asesmen.catatan || '-']
+                ];
+                doc.autoTable({
+                    startY: yPos,
+                    margin: { left: margin },
+                    body: asesData,
+                    theme: 'grid',
+                    styles: { fontSize: 9, cellPadding: 4, lineColor: [200, 200, 200] },
+                    columnStyles: { 0: { cellWidth: 120, fontStyle: 'bold', fillColor: [250, 250, 250] } }
+                });
+                yPos = doc.lastAutoTable.finalY;
+
+                // --- C. TUJUAN PEMBELAJARAN ---
+                addSectionTitle("C. TUJUAN PEMBELAJARAN");
+                
+                doc.setFont('helvetica', 'bold');
+                doc.text("Tujuan Jangka Panjang (" + ppi.target_waktu + "):", margin, yPos);
+                yPos += 15;
+                doc.setFont('helvetica', 'normal');
+                
+                // Wrap text manually or use autotable for single cell
+                const splitTujuanP = doc.splitTextToSize(ppi.tujuan_panjang || '-', contentWidth);
+                doc.text(splitTujuanP, margin, yPos);
+                yPos += (splitTujuanP.length * 12) + 10;
+
+                doc.setFont('helvetica', 'bold');
+                doc.text("Tujuan Jangka Pendek:", margin, yPos);
+                yPos += 15;
+                doc.setFont('helvetica', 'normal');
+                const splitTujuanPd = doc.splitTextToSize(ppi.tujuan_pendek || '-', contentWidth);
+                doc.text(splitTujuanPd, margin, yPos);
+                yPos += (splitTujuanPd.length * 12);
+
+                checkPageBreak(150); // Ensure space for next sections
+
+                // --- D. STRATEGI & ADAPTASI ---
+                addSectionTitle("D. STRATEGI & ADAPTASI PEMBELAJARAN");
+                
+                doc.setFont('helvetica', 'bold'); doc.text("Metode/Strategi:", margin, yPos);
+                doc.setFont('helvetica', 'normal'); doc.text(((ppi.strategi && Array.isArray(ppi.strategi.metode)) ? ppi.strategi.metode : []).join(', ') || '-', margin + 90, yPos);
+                yPos += 15;
+                doc.setFont('helvetica', 'bold'); doc.text("Media:", margin, yPos);
+                doc.setFont('helvetica', 'normal'); doc.text(((ppi.strategi && Array.isArray(ppi.strategi.media)) ? ppi.strategi.media : []).join(', ') || '-', margin + 90, yPos);
+                yPos += 15;
+
+                const adaptasiData = [
+                    ["Materi", ppi.adaptasi.materi || '-'],
+                    ["Instruksi", ppi.adaptasi.instruksi || '-'],
+                    ["Waktu", ppi.adaptasi.waktu || '-'],
+                    ["Evaluasi", ppi.adaptasi.evaluasi || '-']
+                ];
+                doc.autoTable({
+                    startY: yPos,
+                    margin: { left: margin },
+                    body: adaptasiData,
+                    theme: 'grid',
+                    styles: { fontSize: 9, cellPadding: 4, lineColor: [200, 200, 200] },
+                    columnStyles: { 0: { cellWidth: 80, fontStyle: 'bold', fillColor: [250, 250, 250] } }
+                });
+                yPos = doc.lastAutoTable.finalY;
+
+                // --- E. PROGRAM MINGGUAN ---
+                addSectionTitle("E. PROGRAM PEMBELAJARAN MINGGUAN");
+                
+                const progHead = [["Minggu", "Target / Aktivitas Pembelajaran", "Metode Evaluasi"]];
+                const progBody = (Array.isArray(ppi.program_mingguan) ? ppi.program_mingguan : []).map(pm => [pm.minggu || '-', pm.aktivitas || '-', pm.evaluasi || '-']);
+                
+                doc.autoTable({
+                    startY: yPos,
+                    margin: { left: margin },
+                    head: progHead,
+                    body: progBody.length > 0 ? progBody : [["-", "-", "-"]],
+                    theme: 'grid',
+                    headStyles: { fillColor: [30, 64, 175], textColor: 255, fontSize: 9 }, // Primary color
+                    styles: { fontSize: 9, cellPadding: 4, lineColor: [200, 200, 200] },
+                    columnStyles: { 0: { cellWidth: 60 } }
+                });
+                yPos = doc.lastAutoTable.finalY;
+
+                // --- SIGNATURES ---
+                checkPageBreak(150);
+                yPos += 30;
+                
+                const dateStr = ppi.tanggal; // Assuming formatted DD/MM/YYYY
+                doc.text("Mengetahui,", margin, yPos);
+                doc.text("Tanggal Dibuat: " + dateStr, pageWidth - margin - 120, yPos);
+                yPos += 20;
+
+                doc.text("Orang Tua/Wali", margin, yPos);
+                doc.text("Guru Kelas", (pageWidth/2) - 30, yPos, {align: 'center'});
+                doc.text("Guru Pendamping Khusus", pageWidth - margin, yPos, {align: 'right'});
+                
+                yPos += 60; // Space for signature
+                
+                doc.text("(...................................)", margin, yPos);
+                doc.text(`(${siswa.guruKelas || '.........................'})`, (pageWidth/2) - 30, yPos, {align: 'center'});
+                doc.text(`(${siswa.gpk || '.........................'})`, pageWidth - margin, yPos, {align: 'right'});
+
+                yPos += 40;
+                doc.text("Kepala Sekolah", pageWidth/2, yPos, {align: 'center'});
+                yPos += 60;
+                doc.text("(...................................)", pageWidth/2, yPos, {align: 'center'});
+                doc.text("NIP.", pageWidth/2, yPos+15, {align: 'center'});
+
+
+                // SAVE
+                doc.save(`PPI_${siswa.nama.replace(/\s+/g, '_')}_${dateStr.replace(/\//g, '')}.pdf`);
+            },
+
+
+            // --- Chart & Monitoring Logic ---
+            chartInstance: null,
+
+            initChart: function() {
+                const ctx = document.getElementById('progressChart');
+                if(!ctx) return;
+                
+                document.getElementById('chartEmptyState').classList.remove('hidden');
+
+                // Create empty chart initially
+                this.chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: [], datasets: [] },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, max: 100, title: { display: true, text: 'Capaian (%)' } }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            },
+
+            updateChart: function() {
+                const sId = document.getElementById('mon_siswa').value;
+                if(!sId || !this.chartInstance) return;
+
+                document.getElementById('chartEmptyState').classList.add('hidden');
+
+                const mData = this.state.data.monitoring[sId] || [];
+                
+                // Sort chronologically (assuming months array order for simplicity in demo)
+                const monthOrder = {"Januari":1, "Februari":2, "Maret":3, "April":4, "Mei":5, "Juni":6, "Juli":7, "Agustus":8, "September":9, "Oktober":10, "November":11, "Desember":12};
+                mData.sort((a,b) => monthOrder[a.bulan] - monthOrder[b.bulan]);
+
+                const labels = mData.map(d => d.bulan);
+                const dataPoints = mData.map(d => d.capaian);
+
+                this.chartInstance.data = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Progress Capaian (%)',
+                        data: dataPoints,
+                        borderColor: '#10B981', // Emerald 500
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#10B981',
+                        pointRadius: 5,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                };
+                this.chartInstance.update();
+
+                // Update History List
+                const historyEl = document.getElementById('mon_history_list');
+                historyEl.innerHTML = '';
+                if(mData.length === 0) {
+                    historyEl.innerHTML = '<p class="text-gray-400 italic">Belum ada catatan.</p>';
+                } else {
+                    mData.slice().reverse().forEach(d => { // Show newest first in list
+                        historyEl.innerHTML += `
+                            <div class="border-l-2 border-accent pl-3 pb-3">
+                                <span class="text-xs text-gray-500 font-bold">${d.bulan} (${d.capaian}%)</span>
+                                <p class="text-gray-700 mt-1">${d.catatan || '-'}</p>
+                            </div>
+                        `;
+                    });
+                }
+            },
+
+            addMonitoringData: function() {
+                const sId = document.getElementById('mon_siswa').value;
+                const bulan = document.getElementById('mon_bulan').value;
+                const capaian = parseInt(document.getElementById('mon_capaian').value);
+                const catatan = document.getElementById('mon_catatan').value;
+
+                if(!sId) return alert('Pilih siswa terlebih dahulu!');
+                if(isNaN(capaian) || capaian < 0 || capaian > 100) return alert('Masukkan nilai capaian valid (0-100)');
+
+                if(!this.state.data.monitoring[sId]) this.state.data.monitoring[sId] = [];
+                
+                // Check if month exists, if so update, else push
+                const existingIndex = this.state.data.monitoring[sId].findIndex(d => d.bulan === bulan);
+                if(existingIndex >= 0) {
+                    this.state.data.monitoring[sId][existingIndex] = { bulan, capaian, catatan };
+                } else {
+                    this.state.data.monitoring[sId].push({ bulan, capaian, catatan });
+                }
+
+                this.saveData();
+                this.updateChart();
+                
+                // clear input
+                document.getElementById('mon_capaian').value = '';
+                document.getElementById('mon_catatan').value = '';
+            }
+        };
+
+        // Expose the legacy app object for the V2 compatibility layer.
+        window.app = app;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup Mobile Menu Listeners
+            document.getElementById('mobileMenuBtn').addEventListener('click', () => app.toggleMobileMenu());
+            document.getElementById('closeMobileMenuBtn').addEventListener('click', () => app.toggleMobileMenu());
+            
+            // Initial Render based on state (usually 'landing')
+            app.navigateTo(app.state.currentView);
+        });
+
+    </script>
+    <!-- PPI Smart Assistant V2 feature layer (inlined for single-file deployment) -->
+<script>
+/*
+ * PPI Smart Assistant V2.0 compatibility and feature layer.
+ * Keeps the legacy localStorage key and legacy data shape intact.
+ */
+(() => {
+  'use strict';
+
+  if (!window.app) {
+    console.error('PPI Smart Assistant: aplikasi lama tidak ditemukan.');
+    return;
+  }
+
+  const DB_KEY = 'ppi_smart_assistant_data';
+  const SETTINGS_KEY = 'ppi_smart_assistant_v2_settings';
+  const PRE_V2_BACKUP_KEY = 'ppi_smart_assistant_backup_pre_v2';
+  const AUTO_BACKUP_KEY = 'ppi_smart_assistant_backup_previous_save';
+  const VERSION_KEY = 'ppi_smart_assistant_schema_version';
+  const VERSION = 2;
+  const originalRenderContent = app.renderContent.bind(app);
+  const originalLoadAsesmenSiswa = app.loadAsesmenSiswa.bind(app);
+
+  const safeParse = (value, fallback = null) => {
+    try { return JSON.parse(value); } catch (_) { return fallback; }
+  };
+  const storageGet = (key) => { try { return localStorage.getItem(key); } catch (_) { return null; } };
+  const storageSet = (key, value) => { try { localStorage.setItem(key, value); return true; } catch (_) { return false; } };
+  const clone = (value) => JSON.parse(JSON.stringify(value));
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[ch]));
+  const todayISO = () => new Date().toISOString().slice(0, 10);
+  const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+  function normalizeData(input) {
+    const data = input && typeof input === 'object' ? input : {};
+    if (!Array.isArray(data.siswa)) data.siswa = [];
+    if (!data.asesmen || typeof data.asesmen !== 'object') data.asesmen = {};
+    if (!data.ppi || typeof data.ppi !== 'object') data.ppi = {};
+    if (!data.monitoring || typeof data.monitoring !== 'object') data.monitoring = {};
+    if (!data.observasi || typeof data.observasi !== 'object') data.observasi = {};
+    data.siswa.forEach((student) => {
+      if (!student || typeof student !== 'object') return;
+      if (!Array.isArray(data.ppi[student.id])) data.ppi[student.id] = [];
+      if (!Array.isArray(data.monitoring[student.id])) data.monitoring[student.id] = [];
+      if (!Array.isArray(data.observasi[student.id])) data.observasi[student.id] = [];
+    });
+    return data;
+  }
+
+  // Keep a byte-for-byte copy of the existing legacy data before V2 writes anything.
+  const legacyRaw = storageGet(DB_KEY);
+  if (legacyRaw && !storageGet(PRE_V2_BACKUP_KEY)) {
+    if (!storageSet(PRE_V2_BACKUP_KEY, legacyRaw)) console.warn('Cadangan pra-V2 tidak dapat disimpan di localStorage.');
+  }
+  app.state.data = normalizeData(app.state.data);
+  app.state.ppiStep = Number(app.state.ppiStep || 1);
+  app.state.tempPPI = app.state.tempPPI || {};
+  app.state.aiDraft = app.state.aiDraft || null;
+  app.state.aiPrompt = app.state.aiPrompt || '';
+  try { localStorage.setItem(VERSION_KEY, String(VERSION)); } catch (_) {}
+
+  const settings = safeParse(storageGet(SETTINGS_KEY), {}) || {};
+  settings.apiBase = typeof settings.apiBase === 'string' ? settings.apiBase : '';
+
+  function getApiUrl(path) {
+    const base = (settings.apiBase || '').trim().replace(/\/$/, '');
+    return base ? `${base}${path}` : path;
+  }
+
+  function downloadBlob(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function countPpi() {
+    return Object.values(app.state.data.ppi || {}).reduce((sum, list) => sum + (Array.isArray(list) ? list.length : 0), 0);
+  }
+
+  function getAllMonitoring() {
+    const rows = [];
+    Object.entries(app.state.data.monitoring || {}).forEach(([studentId, items]) => {
+      (Array.isArray(items) ? items : []).forEach((item) => rows.push({ ...item, studentId }));
+    });
+    return rows;
+  }
+
+  function addNavButton(container, id, view, label, icon, mobile = false) {
+    if (!container || document.getElementById(id)) return;
+    const button = document.createElement('button');
+    button.id = id;
+    button.type = 'button';
+    button.className = mobile
+      ? 'w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100'
+      : 'sidebar-item w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors';
+    button.innerHTML = mobile
+      ? `<i class="fa-solid ${icon} w-6"></i> ${label}`
+      : `<i class="fa-solid ${icon} w-6 text-center mr-2 text-gray-400"></i> ${label}`;
+    button.addEventListener('click', () => {
+      app.navigateTo(view);
+      if (mobile && document.getElementById('mobileMenu') && !document.getElementById('mobileMenu').classList.contains('hidden')) app.toggleMobileMenu();
+    });
+    container.appendChild(button);
+  }
+
+  function installNavigation() {
+    const desktop = document.querySelector('#view-app aside .overflow-y-auto');
+    const mobile = document.querySelector('#mobileMenu .p-2.space-y-1.flex-grow');
+    addNavButton(desktop, 'nav-observasi', 'observasi', 'Jurnal Observasi', 'fa-clipboard-list');
+    addNavButton(desktop, 'nav-settings', 'settings', 'Data & Pengaturan', 'fa-database');
+    addNavButton(mobile, 'mobile-nav-observasi', 'observasi', 'Jurnal Observasi', 'fa-clipboard-list', true);
+    addNavButton(mobile, 'mobile-nav-settings', 'settings', 'Data & Pengaturan', 'fa-database', true);
+  }
+
+  // Backup the previous saved state before replacing the main data key.
+  app.saveData = function () {
+    try {
+      const previous = localStorage.getItem(DB_KEY);
+      if (previous) {
+        try { localStorage.setItem(AUTO_BACKUP_KEY, previous); }
+        catch (backupError) { console.warn('Cadangan otomatis tidak dapat diperbarui:', backupError); }
+      }
+      localStorage.setItem(DB_KEY, JSON.stringify(this.state.data));
+      return true;
+    } catch (error) {
+      console.error('Gagal menyimpan data PPI:', error);
+      alert('Data belum berhasil disimpan. Penyimpanan browser mungkin penuh atau dinonaktifkan. Segera unduh cadangan JSON sebelum melanjutkan.');
+      return false;
+    }
+  };
+
+  // Dashboard: replace the previous demonstration counters with real values.
+  const originalDashboard = app.views.dashboard;
+  app.views.dashboard = function () {
+    let html = originalDashboard.call(this);
+    const now = new Date();
+    const evaluationsThisMonth = getAllMonitoring().filter((item) => {
+      const itemMonth = monthNames.indexOf(item.bulan);
+      const itemYear = Number(item.tahun || 0);
+      return itemMonth === now.getMonth() && itemYear === now.getFullYear();
+    }).length;
+    const monitoredStudents = Object.values(app.state.data.monitoring || {}).filter((items) => Array.isArray(items) && items.length > 0).length;
+    html = html.replace(/(<p class="text-sm text-gray-500 font-medium">Evaluasi Bulan Ini<\/p>\s*<p class="text-2xl font-bold text-gray-800">)[\s\S]*?(<\/p>)/,
+      `$1${evaluationsThisMonth}$2`);
+    html = html.replace(/(<p class="text-sm text-gray-500 font-medium">Progress Terpantau<\/p>\s*<p class="text-2xl font-bold text-gray-800">)[\s\S]*?(<\/p>)/,
+      `$1${monitoredStudents}$2`);
+    return html;
+  };
+
+  // Student edit flow: retain the same student ID so linked PPI and monitoring remain connected.
+  app.editSiswa = function (id) {
+    const student = this.getStudentById(id);
+    const form = document.getElementById('formTambahSiswa');
+    const modal = document.getElementById('modalTambahSiswa');
+    if (!student || !form || !modal) return alert('Data peserta didik tidak ditemukan.');
+    ['nama','nisn','gender','usia','ttl','kelas','semester','sekolah','guruKelas','gpk','kondisi'].forEach((key) => {
+      if (form.elements[key]) form.elements[key].value = student[key] ?? '';
+    });
+    form.dataset.editId = id;
+    modal.querySelector('h3').textContent = 'Edit Data Peserta Didik';
+    form.querySelector('button[type="submit"]').textContent = 'Simpan Perubahan';
+    modal.classList.remove('hidden');
+  };
+
+  app.submitSiswa = function (event) {
+    event.preventDefault();
+    const form = event.target;
+    const editId = form.dataset.editId || '';
+    const student = {
+      id: editId || this.generateId('S'),
+      nama: form.elements.nama.value.trim(),
+      nisn: form.elements.nisn.value.trim(),
+      gender: form.elements.gender.value,
+      usia: form.elements.usia.value,
+      ttl: form.elements.ttl.value.trim(),
+      kelas: form.elements.kelas.value.trim(),
+      semester: form.elements.semester.value,
+      sekolah: form.elements.sekolah.value.trim(),
+      guruKelas: form.elements.guruKelas.value.trim(),
+      gpk: form.elements.gpk.value.trim(),
+      kondisi: form.elements.kondisi.value
+    };
+    if (!student.nama || !student.kelas || !student.sekolah || !student.kondisi) return alert('Lengkapi nama, kelas, sekolah, dan profil kebutuhan.');
+    if (editId) {
+      const index = this.state.data.siswa.findIndex((item) => item.id === editId);
+      if (index < 0) return alert('Data peserta didik yang akan diedit tidak ditemukan.');
+      this.state.data.siswa[index] = { ...this.state.data.siswa[index], ...student };
+    } else {
+      this.state.data.siswa.push(student);
+      this.state.data.ppi[student.id] = [];
+      this.state.data.monitoring[student.id] = [];
+      this.state.data.observasi[student.id] = [];
+    }
+    if (!this.saveData()) return;
+    form.reset();
+    delete form.dataset.editId;
+    document.getElementById('modalTambahSiswa').classList.add('hidden');
+    const modalTitle = document.querySelector('#modalTambahSiswa h3');
+    if (modalTitle) modalTitle.textContent = 'Tambah Peserta Didik Baru';
+    const submit = form.querySelector('button[type="submit"]');
+    if (submit) submit.textContent = 'Simpan Data';
+    this.renderContent();
+  };
+
+  // Restore legacy assessment values and preserve unfinished PPI work between wizard steps.
+  app.loadAsesmenSiswa = function (id) {
+    if (id && id !== this.state.activeStudentId) {
+      this.state.tempPPI = {};
+      this.state.aiDraft = null;
+      this.state.aiPrompt = '';
+    }
+    return originalLoadAsesmenSiswa(id);
+  };
+
+  app.capturePpiForm = function () {
+    const byId = (id) => document.getElementById(id);
+    const checked = (selector) => Array.from(document.querySelectorAll(`${selector}:checked`)).map((node) => node.value);
+    const weekly = Array.from(document.querySelectorAll('#tbodyProgramMingguan tr')).map((row) => {
+      const inputs = row.querySelectorAll('input');
+      return { minggu: inputs[0]?.value || '', aktivitas: inputs[1]?.value || '', evaluasi: inputs[2]?.value || '' };
+    }).filter((row) => row.aktivitas.trim());
+    this.state.tempPPI = {
+      ...(this.state.tempPPI || {}),
+      tujuan_panjang: byId('ppi_tujuan_panjang')?.value || '',
+      tujuan_pendek: byId('ppi_tujuan_pendek')?.value || '',
+      target_waktu: byId('ppi_target_waktu')?.value || '6 Bulan (1 Semester)',
+      metode: Array.from(new Set([...checked('.cb-metode'), ...(byId('ppi_strategi_tambahan')?.value || '').split('\n').map((x) => x.trim()).filter(Boolean)])),
+      media: Array.from(new Set([...checked('.cb-media'), ...(byId('ppi_media_tambahan')?.value || '').split('\n').map((x) => x.trim()).filter(Boolean)])),
+      strategi_tambahan: byId('ppi_strategi_tambahan')?.value || '',
+      media_tambahan: byId('ppi_media_tambahan')?.value || '',
+      indikator_keberhasilan: (byId('ppi_indikator')?.value || '').split('\n').map((x) => x.trim()).filter(Boolean),
+      adaptasi: {
+        materi: byId('adaptasi_materi')?.value || '',
+        instruksi: byId('adaptasi_instruksi')?.value || '',
+        waktu: byId('adaptasi_waktu')?.value || '',
+        evaluasi: byId('adaptasi_evaluasi')?.value || ''
+      },
+      program_mingguan: weekly
+    };
+    return this.state.tempPPI;
+  };
+
+  app.restorePpiForm = function () {
+    const draft = this.state.tempPPI || {};
+    const setValue = (id, value) => { const el = document.getElementById(id); if (el && value !== undefined && value !== null) el.value = value; };
+    setValue('ppi_tujuan_panjang', draft.tujuan_panjang || '');
+    setValue('ppi_tujuan_pendek', draft.tujuan_pendek || '');
+    setValue('ppi_indikator', Array.isArray(draft.indikator_keberhasilan) ? draft.indikator_keberhasilan.join('\n') : (draft.indikator_keberhasilan || ''));
+    setValue('ppi_strategi_tambahan', draft.strategi_tambahan || (draft.metode || []).filter((x) => !Array.from(document.querySelectorAll('.cb-metode')).some((el) => el.value === x)).join('\n'));
+    setValue('ppi_media_tambahan', draft.media_tambahan || (draft.media || []).filter((x) => !Array.from(document.querySelectorAll('.cb-media')).some((el) => el.value === x)).join('\n'));
+    setValue('ppi_target_waktu', draft.target_waktu || '6 Bulan (1 Semester)');
+    setValue('adaptasi_materi', draft.adaptasi?.materi || '');
+    setValue('adaptasi_instruksi', draft.adaptasi?.instruksi || '');
+    setValue('adaptasi_waktu', draft.adaptasi?.waktu || '');
+    setValue('adaptasi_evaluasi', draft.adaptasi?.evaluasi || '');
+    document.querySelectorAll('.cb-metode').forEach((el) => { el.checked = (draft.metode || []).includes(el.value); });
+    document.querySelectorAll('.cb-media').forEach((el) => { el.checked = (draft.media || []).includes(el.value); });
+    const tbody = document.getElementById('tbodyProgramMingguan');
+    if (tbody) {
+      tbody.innerHTML = '';
+      const rows = Array.isArray(draft.program_mingguan) && draft.program_mingguan.length ? draft.program_mingguan : [{ minggu: 'M-1', aktivitas: '', evaluasi: '' }];
+      this.mingguCount = 0;
+      rows.forEach((row, index) => {
+        this.mingguCount++;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-1"><input type="text" class="w-full border-0 p-2 focus:ring-0 text-center" value="${escapeHtml(row.minggu || `M-${index + 1}`)}"></td>
+          <td class="p-1"><input type="text" class="w-full border-0 p-2 focus:ring-0" placeholder="Aktivitas..." value="${escapeHtml(row.aktivitas || '')}"></td>
+          <td class="p-1"><input type="text" class="w-full border-0 p-2 focus:ring-0" placeholder="Kriteria lulus..." value="${escapeHtml(row.evaluasi || '')}"></td>
+          <td class="p-1 text-center"><button type="button" onclick="this.closest('tr').remove()" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-times"></i></button></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+  };
+
+  app.renderAiDraft = function (draft) {
+    const container = document.getElementById('aiResultContainer');
+    const skip = document.getElementById('skipAiContainer');
+    const output = document.getElementById('aiResultText');
+    if (!container || !output || !draft) return;
+    const list = (items) => Array.isArray(items) && items.length ? items.map((item, i) => `${i + 1}. ${item}`).join('\n') : '-';
+    const adapt = draft.adaptasi || {};
+    const weeks = Array.isArray(draft.program_mingguan) ? draft.program_mingguan : [];
+    output.textContent = [
+      'A. TUJUAN JANGKA PANJANG', draft.tujuan_jangka_panjang || '-',
+      '', 'B. TUJUAN JANGKA PENDEK', list(draft.tujuan_jangka_pendek),
+      '', 'C. INDIKATOR KEBERHASILAN', list(draft.indikator_keberhasilan),
+      '', 'D. STRATEGI PEMBELAJARAN', list(draft.strategi),
+      '', 'E. MEDIA PEMBELAJARAN', list(draft.media),
+      '', 'F. ADAPTASI PEMBELAJARAN',
+      `Materi: ${adapt.materi || '-'}`,
+      `Instruksi: ${adapt.instruksi || '-'}`,
+      `Waktu: ${adapt.waktu || '-'}`,
+      `Evaluasi: ${adapt.evaluasi || '-'}`,
+      '', 'G. RENCANA PROGRAM MINGGUAN',
+      weeks.length ? weeks.map((w) => `${w.minggu || ''} — ${w.aktivitas || ''} (Evaluasi: ${w.evaluasi || '-'})`).join('\n') : '-',
+      '', 'H. CATATAN VALIDASI', list(draft.catatan_validasi)
+    ].join('\n');
+    container.classList.remove('hidden');
+    if (skip) skip.classList.add('hidden');
+  };
+
+  app.generateAI = async function () {
+    const promptEl = document.getElementById('aiPrompt');
+    const consentEl = document.getElementById('aiPrivacyConsent');
+    const button = document.querySelector('button[onclick="app.generateAI()"]');
+    const prompt = (promptEl?.value || '').trim();
+    if (!prompt) return alert('Tuliskan fokus atau kebutuhan pembelajaran yang ingin dibantu.');
+    if (!consentEl?.checked) return alert('Centang persetujuan anonimisasi data terlebih dahulu.');
+    if (!this.state.activeStudentId) return alert('Pilih peserta didik dan simpan asesmen awal terlebih dahulu.');
+
+    const assessment = this.state.data.asesmen[this.state.activeStudentId] || {};
+    const payload = {
+      prompt,
+      assessment: {
+        akademik: String(assessment.akademik || '').slice(0, 3000),
+        komunikasi: String(assessment.komunikasi || '').slice(0, 3000),
+        sosial: String(assessment.sosial || '').slice(0, 3000),
+        motorik: String(assessment.motorik || '').slice(0, 3000)
+      }
+    };
+    this.state.aiPrompt = prompt;
+    const oldLabel = button?.innerHTML;
+    if (button) { button.disabled = true; button.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Menghubungkan ke AI...'; }
+    try {
+      const response = await fetch(getApiUrl('/api/generate-ppi'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || `Permintaan AI gagal (HTTP ${response.status}).`);
+      if (!result.data || !result.data.tujuan_jangka_panjang) throw new Error('Respons AI tidak lengkap. Silakan coba kembali.');
+      this.state.aiDraft = result.data;
+      this.renderAiDraft(result.data);
+    } catch (error) {
+      console.error('AI PPI error:', error);
+      alert(`AI belum dapat menghasilkan draf. ${error.message}\n\nPastikan server PPI V2 berjalan dan OPENAI_API_KEY sudah diatur.`);
+    } finally {
+      if (button) { button.disabled = false; button.innerHTML = oldLabel || '<i class="fa-solid fa-bolt mr-2"></i> Generate Draft PPI'; }
+    }
+  };
+
+  app.nextStepPPI = function (step, useAiDraft = false) {
+    const currentStep = Number(this.state.ppiStep || 1);
+    if (currentStep === 1 && step === 2) {
+      const studentId = this.state.activeStudentId;
+      if (!studentId) return alert('Pilih peserta didik terlebih dahulu.');
+      this.state.data.asesmen[studentId] = {
+        akademik: document.getElementById('ases_akademik')?.value || '',
+        komunikasi: document.getElementById('ases_komunikasi')?.value || '',
+        sosial: document.getElementById('ases_sosial')?.value || '',
+        motorik: document.getElementById('ases_motorik')?.value || '',
+        catatan: document.getElementById('ases_catatan')?.value || ''
+      };
+      if (!this.saveData()) return;
+    }
+    if (currentStep === 3 && step === 2) this.capturePpiForm();
+    if (step === 3 && useAiDraft) {
+      if (!this.state.aiDraft) return alert('Belum ada hasil AI. Silakan generate terlebih dahulu atau pilih isi manual.');
+      const draft = this.state.aiDraft;
+      this.state.tempPPI = {
+        ...(this.state.tempPPI || {}),
+        tujuan_panjang: draft.tujuan_jangka_panjang || '',
+        tujuan_pendek: Array.isArray(draft.tujuan_jangka_pendek) ? draft.tujuan_jangka_pendek.map((x, i) => `${i + 1}. ${x}`).join('\n') : String(draft.tujuan_jangka_pendek || ''),
+        indikator_keberhasilan: Array.isArray(draft.indikator_keberhasilan) ? draft.indikator_keberhasilan : [],
+        target_waktu: '6 Bulan (1 Semester)',
+        metode: Array.isArray(draft.strategi) ? draft.strategi : [],
+        media: Array.isArray(draft.media) ? draft.media : [],
+        adaptasi: draft.adaptasi || {},
+        program_mingguan: Array.isArray(draft.program_mingguan) ? draft.program_mingguan : [],
+        catatan_validasi: Array.isArray(draft.catatan_validasi) ? draft.catatan_validasi : []
+      };
+    }
+    if (step === 4) {
+      if (currentStep !== 3) return alert('Selesaikan desain program terlebih dahulu.');
+      if (!this.saveDesainPPI()) return;
+      this.state.ppiStep = 4;
+      this.renderContent();
+      return;
+    }
+    this.state.ppiStep = step;
+    this.renderContent();
+    this.restoreWizardStep();
+  };
+
+  app.restoreWizardStep = function () {
+    const step = Number(this.state.ppiStep || 1);
+    if (step === 1 && this.state.activeStudentId) {
+      const select = document.getElementById('selectSiswaPPI');
+      if (select) {
+        select.value = this.state.activeStudentId;
+        this.loadAsesmenSiswa(this.state.activeStudentId);
+      }
+    }
+    if (step === 2) {
+      const prompt = document.getElementById('aiPrompt');
+      if (prompt) prompt.value = this.state.aiPrompt || '';
+      if (this.state.aiDraft) this.renderAiDraft(this.state.aiDraft);
+    }
+    if (step === 3) this.restorePpiForm();
+  };
+
+  app.saveDesainPPI = function () {
+    const studentId = this.state.activeStudentId;
+    if (!studentId) { alert('Peserta didik belum dipilih.'); return false; }
+    const draft = this.capturePpiForm();
+    const ppi = {
+      id: this.generateId('PPI'),
+      tanggal: new Date().toLocaleDateString('id-ID'),
+      createdAt: new Date().toISOString(),
+      tujuan_panjang: draft.tujuan_panjang,
+      tujuan_pendek: draft.tujuan_pendek,
+      target_waktu: draft.target_waktu,
+      strategi: { metode: draft.metode || [], media: draft.media || [] },
+      adaptasi: draft.adaptasi || {},
+      program_mingguan: draft.program_mingguan || [],
+      indikator_keberhasilan: draft.indikator_keberhasilan || [],
+      catatan_validasi: draft.catatan_validasi || []
+    };
+    if (!Array.isArray(this.state.data.ppi[studentId])) this.state.data.ppi[studentId] = [];
+    this.state.data.ppi[studentId].push(ppi);
+    this.state.lastCreatedPPIId = ppi.id;
+    this.state.lastCreatedPPISiswaId = studentId;
+    if (!this.saveData()) {
+      this.state.data.ppi[studentId].pop();
+      return false;
+    }
+    this.state.tempPPI = {};
+    return true;
+  };
+
+  // New monitoring format stores month + year. Old month-only entries remain untouched.
+  app.initChart = function () {
+    const canvas = document.getElementById('progressChart');
+    if (!canvas || !window.Chart) return;
+    if (this.chartInstance) { try { this.chartInstance.destroy(); } catch (_) {} }
+    document.getElementById('chartEmptyState')?.classList.remove('hidden');
+    this.chartInstance = new Chart(canvas, {
+      type: 'line', data: { labels: [], datasets: [] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Capaian (%)' } } },
+        plugins: { legend: { display: false } }
+      }
+    });
+  };
+
+  app.updateChart = function () {
+    const select = document.getElementById('mon_siswa');
+    const historyEl = document.getElementById('mon_history_list');
+    const empty = document.getElementById('chartEmptyState');
+    if (!select || !this.chartInstance) return;
+    const studentId = select.value;
+    const source = this.state.data.monitoring[studentId] || [];
+    const monthOrder = Object.fromEntries(monthNames.map((month, index) => [month, index + 1]));
+    const rows = source.slice().sort((a, b) => {
+      const yearDiff = Number(a.tahun || 0) - Number(b.tahun || 0);
+      return yearDiff || (monthOrder[a.bulan] || 0) - (monthOrder[b.bulan] || 0);
+    });
+    const labels = rows.map((row) => `${row.bulan || '-'}${row.tahun ? ` ${row.tahun}` : ' (tahun tidak tercatat)'}`);
+    this.chartInstance.data = {
+      labels,
+      datasets: [{
+        label: 'Progress Capaian (%)', data: rows.map((row) => Number(row.capaian) || 0),
+        borderColor: '#10B981', backgroundColor: 'rgba(16,185,129,0.1)', borderWidth: 3,
+        pointBackgroundColor: '#10B981', pointRadius: 5, fill: true, tension: 0.3
+      }]
+    };
+    this.chartInstance.update();
+    if (empty) empty.classList.toggle('hidden', Boolean(studentId && rows.length));
+    if (historyEl) {
+      historyEl.innerHTML = rows.length ? rows.slice().reverse().map((row) => `
+        <div class="border-l-2 border-accent pl-3 pb-3">
+          <span class="text-xs text-gray-500 font-bold">${escapeHtml(row.bulan)} ${row.tahun ? `(${escapeHtml(row.tahun)})` : '(tahun tidak tercatat)'} — ${escapeHtml(row.capaian)}%</span>
+          <p class="text-gray-700 mt-1">${escapeHtml(row.catatan || '-')}</p>
+        </div>`).join('') : '<p class="text-gray-400 italic">Belum ada catatan.</p>';
+    }
+  };
+
+  app.addMonitoringData = function () {
+    const studentId = document.getElementById('mon_siswa')?.value;
+    const bulan = document.getElementById('mon_bulan')?.value;
+    const tahun = Number(document.getElementById('mon_tahun')?.value);
+    const capaian = Number(document.getElementById('mon_capaian')?.value);
+    const catatan = document.getElementById('mon_catatan')?.value || '';
+    if (!studentId) return alert('Pilih peserta didik terlebih dahulu.');
+    if (!Number.isInteger(tahun) || tahun < 2000 || tahun > 2100) return alert('Masukkan tahun evaluasi yang valid.');
+    if (!Number.isFinite(capaian) || capaian < 0 || capaian > 100) return alert('Masukkan nilai capaian valid (0–100).');
+    if (!Array.isArray(this.state.data.monitoring[studentId])) this.state.data.monitoring[studentId] = [];
+    const item = { bulan, tahun, capaian, catatan, updatedAt: new Date().toISOString() };
+    const index = this.state.data.monitoring[studentId].findIndex((row) => row.bulan === bulan && Number(row.tahun) === tahun);
+    if (index >= 0) this.state.data.monitoring[studentId][index] = item;
+    else this.state.data.monitoring[studentId].push(item);
+    if (!this.saveData()) return;
+    this.updateChart();
+    document.getElementById('mon_capaian').value = '';
+    document.getElementById('mon_catatan').value = '';
+  };
+
+  // Jurnal observasi and evidence notes.
+  app.views.observasi = function () {
+    const students = app.state.data.siswa;
+    const options = students.map((s) => `<option value="${escapeHtml(s.id)}">${escapeHtml(s.nama)} — Kelas ${escapeHtml(s.kelas || '-')}</option>`).join('');
+    const records = [];
+    Object.entries(app.state.data.observasi || {}).forEach(([studentId, items]) => {
+      const student = app.getStudentById(studentId);
+      (Array.isArray(items) ? items : []).forEach((item) => records.push({ ...item, studentId, studentName: student?.nama || 'Peserta didik tidak ditemukan' }));
+    });
+    records.sort((a, b) => String(b.tanggal || '').localeCompare(String(a.tanggal || '')));
+    return `
+      <div class="mb-6"><h2 class="text-2xl font-bold text-gray-800">Jurnal Observasi</h2><p class="text-gray-500 text-sm mt-1">Catat perilaku belajar, respons, dan tindak lanjut pembelajaran peserta didik.</p></div>
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <section class="xl:col-span-1 bg-white p-5 rounded-xl border border-gray-100 shadow-sm h-fit">
+          <h3 class="font-bold border-b pb-3 mb-4">Tambah Catatan Observasi</h3>
+          <div class="form-group mb-3"><label>Peserta Didik</label><select id="obs_siswa" class="form-input"><option value="">-- Pilih Peserta Didik --</option>${options}</select></div>
+          <div class="form-group mb-3"><label>Tanggal</label><input type="date" id="obs_tanggal" class="form-input" value="${todayISO()}"></div>
+          <div class="form-group mb-3"><label>Aspek yang Diamati</label><select id="obs_aspek" class="form-input"><option>Akademik</option><option>Komunikasi</option><option>Sosial dan emosi</option><option>Motorik</option><option>Kemandirian</option><option>Perilaku belajar</option><option>Lainnya</option></select></div>
+          <div class="form-group mb-3"><label>Konteks / Kegiatan</label><input id="obs_konteks" class="form-input" placeholder="Contoh: pembelajaran matematika"></div>
+          <div class="form-group mb-3"><label>Hasil Observasi</label><textarea id="obs_hasil" rows="3" class="form-input" placeholder="Tuliskan perilaku atau kemampuan yang benar-benar diamati..."></textarea></div>
+          <div class="form-group mb-3"><label>Respons / Dukungan yang Diberikan</label><textarea id="obs_respons" rows="2" class="form-input" placeholder="Dukungan atau strategi yang dicoba..."></textarea></div>
+          <div class="form-group mb-4"><label>Tindak Lanjut</label><textarea id="obs_tindaklanjut" rows="2" class="form-input" placeholder="Langkah pembelajaran berikutnya..."></textarea></div>
+          <button onclick="app.addObservation()" class="w-full bg-primary text-white py-2.5 rounded-lg font-medium hover:bg-blue-700"><i class="fa-solid fa-plus mr-2"></i>Simpan Observasi</button>
+        </section>
+        <section class="xl:col-span-2 bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+          <div class="flex items-center justify-between border-b pb-3 mb-4"><h3 class="font-bold">Riwayat Observasi</h3><span class="text-xs text-gray-500">${records.length} catatan</span></div>
+          <div class="space-y-4 max-h-[720px] overflow-y-auto">${records.length ? records.map((r) => `
+            <article class="border border-gray-100 rounded-lg p-4">
+              <div class="flex flex-wrap justify-between gap-2"><div class="font-semibold text-gray-800">${escapeHtml(r.studentName)}</div><span class="text-xs text-gray-500">${escapeHtml(r.tanggal || '-')}</span></div>
+              <div class="text-xs text-blue-700 mt-1">${escapeHtml(r.aspek || '-')} · ${escapeHtml(r.konteks || '-')}</div>
+              <p class="text-sm text-gray-700 mt-3 whitespace-pre-wrap">${escapeHtml(r.hasil || '-')}</p>
+              <p class="text-xs text-gray-500 mt-2"><strong>Respons:</strong> ${escapeHtml(r.respons || '-')}</p>
+              <p class="text-xs text-gray-500 mt-1"><strong>Tindak lanjut:</strong> ${escapeHtml(r.tindaklanjut || '-')}</p>
+            </article>`).join('') : '<div class="text-center text-gray-400 py-12"><i class="fa-regular fa-clipboard text-3xl mb-3"></i><p>Belum ada catatan observasi.</p></div>'}</div>
+        </section>
+      </div>`;
+  };
+
+  app.addObservation = function () {
+    const studentId = document.getElementById('obs_siswa')?.value;
+    const hasil = (document.getElementById('obs_hasil')?.value || '').trim();
+    if (!studentId) return alert('Pilih peserta didik.');
+    if (!hasil) return alert('Hasil observasi wajib diisi.');
+    if (!Array.isArray(this.state.data.observasi[studentId])) this.state.data.observasi[studentId] = [];
+    this.state.data.observasi[studentId].push({
+      id: this.generateId('OBS'), tanggal: document.getElementById('obs_tanggal')?.value || todayISO(),
+      aspek: document.getElementById('obs_aspek')?.value || '',
+      konteks: document.getElementById('obs_konteks')?.value || '', hasil,
+      respons: document.getElementById('obs_respons')?.value || '',
+      tindaklanjut: document.getElementById('obs_tindaklanjut')?.value || '',
+      createdAt: new Date().toISOString()
+    });
+    if (!this.saveData()) return;
+    this.renderContent();
+  };
+
+  app.views.settings = function () {
+    const students = app.state.data.siswa.length;
+    const ppis = countPpi();
+    const monitoring = getAllMonitoring().length;
+    const observations = Object.values(app.state.data.observasi || {}).reduce((sum, list) => sum + (Array.isArray(list) ? list.length : 0), 0);
+    return `
+      <div class="mb-6"><h2 class="text-2xl font-bold text-gray-800">Data & Pengaturan</h2><p class="text-gray-500 text-sm mt-1">Kelola cadangan data, pemulihan, dan koneksi AI.</p></div>
+      <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-xl border"><p class="text-xs text-gray-500">Peserta didik</p><p class="text-2xl font-bold">${students}</p></div>
+        <div class="bg-white p-4 rounded-xl border"><p class="text-xs text-gray-500">Dokumen PPI</p><p class="text-2xl font-bold">${ppis}</p></div>
+        <div class="bg-white p-4 rounded-xl border"><p class="text-xs text-gray-500">Evaluasi monitoring</p><p class="text-2xl font-bold">${monitoring}</p></div>
+        <div class="bg-white p-4 rounded-xl border"><p class="text-xs text-gray-500">Catatan observasi</p><p class="text-2xl font-bold">${observations}</p></div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section class="bg-white rounded-xl border border-gray-100 p-5">
+          <h3 class="font-bold text-gray-800 mb-2"><i class="fa-solid fa-shield-halved text-emerald-600 mr-2"></i>Cadangan & Pemulihan Data</h3>
+          <p class="text-sm text-gray-500 mb-4">Ekspor seluruh data lokal dalam format JSON. Simpan file cadangan di tempat aman. Impor akan mengganti data aktif setelah konfirmasi; data aktif saat ini akan dicadangkan terlebih dahulu.</p>
+          <button onclick="app.exportBackup()" class="w-full mb-3 bg-primary text-white px-4 py-2.5 rounded-lg font-medium hover:bg-blue-700"><i class="fa-solid fa-download mr-2"></i>Unduh Cadangan Data (JSON)</button>
+          <label class="block text-sm font-medium text-gray-700 mb-2" for="backupImportFile">Pulihkan dari file cadangan</label>
+          <input id="backupImportFile" type="file" accept="application/json,.json" class="form-input" onchange="app.importBackupFile(event)">
+          <p class="text-xs text-gray-400 mt-3">Kunci data lama tetap dipakai: <code>${DB_KEY}</code>. Cadangan pra-V2 dan cadangan simpan sebelumnya juga dipertahankan bila ruang browser mencukupi.</p>
+        </section>
+        <section class="bg-white rounded-xl border border-gray-100 p-5">
+          <h3 class="font-bold text-gray-800 mb-2"><i class="fa-solid fa-wand-magic-sparkles text-purple-600 mr-2"></i>Koneksi AI PPI</h3>
+          <p class="text-sm text-gray-500 mb-4">AI membutuhkan backend Node.js yang berjalan dan OPENAI_API_KEY pada file .env. Jangan menaruh API key di halaman ini.</p>
+          <div class="form-group mb-3"><label>Alamat dasar API (kosongkan jika satu server)</label><input id="aiApiBase" class="form-input" value="${escapeHtml(settings.apiBase || '')}" placeholder="Contoh: https://ppi-domain-anda.id"></div>
+          <div class="flex flex-wrap gap-2"><button onclick="app.saveAISettings()" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm">Simpan Alamat</button><button onclick="app.testAIConnection()" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm">Tes Koneksi AI</button></div>
+          <p id="aiConnectionStatus" class="text-sm text-gray-500 mt-4" role="status">Status koneksi belum diperiksa.</p>
+        </section>
+      </div>
+      <div class="mt-6 bg-amber-50 border border-amber-200 rounded-xl p-5 text-sm text-amber-900">
+        <h3 class="font-bold mb-2"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Catatan keamanan dan penggunaan</h3>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Versi ini tetap menyimpan data utama di browser/perangkat yang digunakan. Data belum otomatis tersinkron antarperangkat atau antar akun.</li>
+          <li>Jangan membagikan perangkat/browser tanpa perlindungan. Gunakan cadangan JSON secara berkala.</li>
+          <li>Untuk AI, kirim hanya catatan kemampuan belajar yang sudah dianonimkan. Jangan kirim nama, NISN, alamat, atau informasi identitas.</li>
+          <li>Hasil AI merupakan saran awal, bukan diagnosis atau keputusan otomatis. Guru dan tim sekolah tetap harus memeriksa kesesuaian tujuan, indikator, strategi, dan adaptasi.</li>
+          <li>Sebelum dipakai banyak sekolah, aplikasi perlu ditambah autentikasi, hak akses, database server, HTTPS, kebijakan retensi, dan prosedur perlindungan data.</li>
+        </ul>
+      </div>`;
+  };
+
+  app.exportBackup = function () {
+    const payload = {
+      app: 'PPI Smart Assistant', schemaVersion: VERSION,
+      exportedAt: new Date().toISOString(), data: this.state.data
+    };
+    const date = todayISO().replace(/-/g, '');
+    downloadBlob(JSON.stringify(payload, null, 2), `PPI_Smart_Assistant_Backup_${date}.json`, 'application/json;charset=utf-8');
+  };
+
+  app.importBackupFile = function (event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (file.size > 15 * 1024 * 1024) { alert('Ukuran file cadangan terlalu besar (maksimal 15 MB).'); event.target.value = ''; return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result || ''));
+        const imported = parsed?.data && typeof parsed.data === 'object' ? parsed.data : parsed;
+        if (!imported || !Array.isArray(imported.siswa) || typeof imported.asesmen !== 'object' || typeof imported.ppi !== 'object' || typeof imported.monitoring !== 'object') {
+          throw new Error('Struktur file bukan cadangan PPI Smart Assistant yang dikenali.');
+        }
+        if (!confirm(`Pulihkan ${imported.siswa.length} peserta didik dari file ini? Data aktif saat ini akan diganti, tetapi akan dicadangkan terlebih dahulu.`)) return;
+        const current = localStorage.getItem(DB_KEY);
+        if (current) {
+          try { localStorage.setItem(AUTO_BACKUP_KEY, current); } catch (_) {}
+        }
+        const previousData = this.state.data;
+        this.state.data = normalizeData(imported);
+        if (!this.saveData()) { this.state.data = previousData; return; }
+        alert('Pemulihan data selesai. Halaman akan diperbarui.');
+        this.navigateTo('dashboard');
+      } catch (error) {
+        alert(`File cadangan tidak dapat dipulihkan: ${error.message}`);
+      } finally {
+        event.target.value = '';
+      }
+    };
+    reader.onerror = () => alert('File tidak dapat dibaca.');
+    reader.readAsText(file);
+  };
+
+  app.saveAISettings = function () {
+    const input = document.getElementById('aiApiBase');
+    settings.apiBase = (input?.value || '').trim().replace(/\/$/, '');
+    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); alert('Alamat API berhasil disimpan.'); }
+    catch (_) { alert('Pengaturan tidak dapat disimpan di browser.'); }
+  };
+
+  app.testAIConnection = async function () {
+    const status = document.getElementById('aiConnectionStatus');
+    if (status) status.textContent = 'Memeriksa koneksi...';
+    try {
+      const response = await fetch(getApiUrl('/api/health'), { method: 'GET' });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.error || 'Backend tidak siap.');
+      if (status) status.textContent = `Terhubung. Backend aktif${result.model ? ` · model ${result.model}` : ''}${result.aiConfigured ? ' · API key terdeteksi' : ' · API key belum diatur'}.`;
+    } catch (error) {
+      if (status) status.textContent = `Belum terhubung: ${error.message}. Jalankan server PPI V2 pada alamat yang benar.`;
+    }
+  };
+
+  app.printStudentReport = function (studentId) {
+    const student = this.getStudentById(studentId);
+    if (!student) return alert('Peserta didik tidak ditemukan.');
+    const assessment = this.state.data.asesmen[studentId] || {};
+    const ppis = this.state.data.ppi[studentId] || [];
+    const monitoring = this.state.data.monitoring[studentId] || [];
+    const observations = this.state.data.observasi[studentId] || [];
+    const section = (title, body) => `<h2>${escapeHtml(title)}</h2>${body}`;
+    const table = (rows) => `<table><tbody>${rows.map(([k,v]) => `<tr><th>${escapeHtml(k)}</th><td>${escapeHtml(v || '-')}</td></tr>`).join('')}</tbody></table>`;
+    const html = `<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Laporan PPI - ${escapeHtml(student.nama)}</title><style>body{font:12px Arial,sans-serif;color:#222;margin:28px;line-height:1.45}h1{text-align:center;font-size:18px;margin-bottom:4px}h2{font-size:13px;background:#eee;padding:7px;margin-top:20px}table{width:100%;border-collapse:collapse}td,th{border:1px solid #bbb;padding:6px;text-align:left;vertical-align:top}th{width:25%;background:#f7f7f7}li{margin:3px 0}.muted{color:#666}@media print{button{display:none}}</style></head><body>
+      <h1>LAPORAN PERKEMBANGAN PESERTA DIDIK</h1><p class="muted" style="text-align:center">PPI Smart Assistant · Dicetak ${new Date().toLocaleDateString('id-ID')}</p>
+      ${section('A. IDENTITAS PESERTA DIDIK', table([['Nama',student.nama],['NISN',student.nisn],['Jenis kelamin',student.gender],['Usia',student.usia],['Kelas / Semester',`${student.kelas || '-'} / ${student.semester || '-'}`],['Sekolah',student.sekolah],['Guru kelas',student.guruKelas],['Guru pendamping',student.gpk],['Profil kebutuhan',student.kondisi]]))}
+      ${section('B. ASESMEN AWAL', table([['Akademik',assessment.akademik],['Komunikasi',assessment.komunikasi],['Sosial dan emosi',assessment.sosial],['Motorik',assessment.motorik],['Catatan',assessment.catatan]]))}
+      ${section('C. RIWAYAT PPI', ppis.length ? ppis.map((p,i)=>`<h3>${i+1}. PPI — ${escapeHtml(p.tanggal || '-')}</h3><p><b>Tujuan jangka panjang:</b> ${escapeHtml(p.tujuan_panjang || '-')}</p><p><b>Tujuan jangka pendek:</b><br>${escapeHtml(p.tujuan_pendek || '-').replace(/\n/g,'<br>')}</p><p><b>Strategi:</b> ${escapeHtml((p.strategi?.metode || []).join(', '))}</p><p><b>Media:</b> ${escapeHtml((p.strategi?.media || []).join(', '))}</p>`).join('') : '<p>Belum ada dokumen PPI.</p>')}
+      ${section('D. MONITORING PERKEMBANGAN', monitoring.length ? table(monitoring.map(m=>[`${m.bulan || '-'} ${m.tahun || '(tahun tidak tercatat)'}`,`${m.capaian ?? '-'}% — ${m.catatan || '-'}`])) : '<p>Belum ada data monitoring.</p>')}
+      ${section('E. JURNAL OBSERVASI', observations.length ? observations.map((o,i)=>`<p><b>${i+1}. ${escapeHtml(o.tanggal || '-')} · ${escapeHtml(o.aspek || '-')}</b><br>${escapeHtml(o.hasil || '-')}<br><span class="muted">Respons: ${escapeHtml(o.respons || '-')} · Tindak lanjut: ${escapeHtml(o.tindaklanjut || '-')}</span></p>`).join('') : '<p>Belum ada catatan observasi.</p>')}
+      <p class="muted" style="margin-top:28px">Dokumen ini merupakan ringkasan administrasi pendidikan. Informasi perlu diverifikasi oleh guru dan pihak sekolah sebelum digunakan sebagai dokumen resmi.</p><button onclick="window.print()">Cetak / Simpan PDF</button></body></html>`;
+    const win = window.open('', '_blank');
+    if (!win) return alert('Popup diblokir browser. Izinkan popup untuk mencetak laporan.');
+    win.document.open(); win.document.write(html); win.document.close();
+    win.onload = () => { win.focus(); };
+  };
+
+  // Extend navigation and rendering without replacing the original views.
+  app.navigateTo = function (view) {
+    if (view === 'buat-ppi' && Number(this.state.ppiStep) === 4) {
+      this.state.ppiStep = 1;
+      this.state.activeStudentId = null;
+      this.state.tempPPI = {};
+      this.state.aiDraft = null;
+      this.state.aiPrompt = '';
+    }
+    if (view === 'landing') {
+      document.getElementById('view-landing').classList.remove('hidden');
+      document.getElementById('view-app').classList.add('hidden');
+      this.state.currentView = 'landing';
+      return;
+    }
+    document.getElementById('view-landing').classList.add('hidden');
+    document.getElementById('view-app').classList.remove('hidden');
+    this.state.currentView = view;
+    this.updateSidebarUI();
+    this.renderContent();
+  };
+
+  app.renderContent = function () {
+    const container = document.getElementById('main-content');
+    if (this.state.currentView === 'settings') {
+      container.className = 'flex-1 overflow-y-auto p-4 md:p-8 bg-surface fade-in';
+      container.innerHTML = this.views.settings();
+      return;
+    }
+    if (this.state.currentView === 'observasi') {
+      container.className = 'flex-1 overflow-y-auto p-4 md:p-8 bg-surface fade-in';
+      container.innerHTML = this.views.observasi();
+      return;
+    }
+    originalRenderContent();
+    if (this.state.currentView === 'buat-ppi') this.restoreWizardStep();
+  };
+
+  // Add a print-report action beside Edit and Delete in the student table.
+  const originalDataSiswa = app.views.dataSiswa;
+  app.views.dataSiswa = function () {
+    let html = originalDataSiswa.call(this);
+    const editButton = '<button onclick="app.editSiswa(\'${s.id}\')" class="text-gray-400 hover:text-primary mx-1" title="Edit"><i class="fa-solid fa-pen"></i></button>';
+    if (html.includes(editButton)) {
+      html = html.replace(editButton, editButton + '<button onclick="app.printStudentReport(\'${s.id}\')" class="text-gray-400 hover:text-emerald-600 mx-1" title="Cetak laporan"><i class="fa-solid fa-print"></i></button>');
+    }
+    return html;
+  };
+
+  // Set initial navigation and ensure all legacy maps are normalized in memory.
+  installNavigation();
+  app.state.data = normalizeData(app.state.data);
+  console.info(`PPI Smart Assistant V${VERSION} siap. Data lama dipertahankan.`);
+})();
+
+</script>
+</body>
+</html>
